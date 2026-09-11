@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1040" viewBox="0 0 1440 1040" role="img" aria-labelledby="title description">
+  <title id="title">Evaluation Readiness Preflight</title>
+  <desc id="description">A proposed Arize product flow that validates a trace-derived dataset and evaluator setup before a developer launches an experiment.</desc>
+  <style>
+    .bg { fill: #fbfaf7; }
+    .title { font: 700 34px ui-sans-serif, system-ui, sans-serif; fill: #17211d; }
+    .subtitle { font: 400 18px ui-sans-serif, system-ui, sans-serif; fill: #53625b; }
+    .label { font: 700 15px ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; fill: #53625b; }
+    .head { font: 700 21px ui-sans-serif, system-ui, sans-serif; fill: #17211d; }
+    .body { font: 400 17px ui-sans-serif, system-ui, sans-serif; fill: #39463f; }
+    .small { font: 400 15px ui-sans-serif, system-ui, sans-serif; fill: #53625b; }
+    .state { font: 700 16px ui-sans-serif, system-ui, sans-serif; fill: #17211d; }
+    .current { fill: #e7eee9; stroke: #7a9988; stroke-width: 2; }
+    .proposed { fill: #eef1fb; stroke: #7181ba; stroke-width: 2; }
+    .launch { fill: #e8f1ec; stroke: #4d7a60; stroke-width: 2; }
+    .status-ready { fill: #d9eddf; stroke: #4d7a60; stroke-width: 1.5; }
+    .status-warning { fill: #fff0cb; stroke: #b67c24; stroke-width: 1.5; }
+    .status-blocked { fill: #fae1df; stroke: #ac4a44; stroke-width: 1.5; }
+    .line { stroke: #718076; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .dash { stroke: #7181ba; stroke-width: 2; stroke-dasharray: 8 8; fill: none; }
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#718076"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1440" height="1040"/>
+  <text class="title" x="72" y="72">Evaluation Readiness Preflight</text>
+  <text class="subtitle" x="72" y="108">Proposed handoff between a trace-derived dataset and an experiment launch</text>
+
+  <rect x="72" y="146" width="378" height="48" rx="24" fill="#e7eee9"/>
+  <text class="label" x="98" y="177">CURRENT ARIZE WORKFLOW</text>
+  <rect x="468" y="146" width="348" height="48" rx="24" fill="#eef1fb"/>
+  <text class="label" x="494" y="177" fill="#46568c">PROPOSED ADDITION</text>
+
+  <rect class="current" x="72" y="232" width="290" height="188" rx="16"/>
+  <text class="head" x="98" y="274">Trace-derived dataset</text>
+  <text class="body" x="98" y="310">Selected observed spans</text>
+  <text class="body" x="98" y="338">Dataset version and rows</text>
+  <text class="body" x="98" y="366">Existing lineage metadata</text>
+  <text class="small" x="98" y="400">Current: trace → dataset works</text>
+  <path class="line" d="M 362 326 L 464 326"/>
+
+  <rect class="proposed" x="492" y="232" width="384" height="188" rx="16"/>
+  <text class="head" x="518" y="274">1. Inspect and infer</text>
+  <text class="body" x="518" y="310">Preview representative row shapes</text>
+  <text class="body" x="518" y="338">Identify task input, prior output,</text>
+  <text class="body" x="518" y="366">evidence, reference, and trajectory</text>
+  <text class="small" x="518" y="400">Candidate mappings remain inferred</text>
+  <path class="line" d="M 876 326 L 958 326"/>
+
+  <rect class="proposed" x="986" y="232" width="382" height="188" rx="16"/>
+  <text class="head" x="1012" y="274">2. Check evaluator setup</text>
+  <text class="body" x="1012" y="310">Required variables and scope</text>
+  <text class="body" x="1012" y="338">Field mapping ambiguity</text>
+  <text class="body" x="1012" y="366">Context and reference evidence</text>
+  <text class="small" x="1012" y="400">Show why each check passed or failed</text>
+
+  <path class="dash" d="M 1177 420 L 1177 476"/>
+  <rect class="proposed" x="492" y="498" width="876" height="164" rx="16"/>
+  <text class="head" x="518" y="540">3. Verify comparison readiness</text>
+  <text class="body" x="518" y="576">Confirm prompt, policy, model, dataset, and environment versions.</text>
+  <text class="body" x="518" y="604">Declare available latency, token, cost, call, retry, and stop measures.</text>
+  <text class="small" x="518" y="636">The preflight validates configuration. It does not rewrite prompts, create expected answers, mutate a dataset, or launch a run.</text>
+
+  <path class="line" d="M 930 662 L 930 704 L 254 704 L 254 736"/>
+  <path class="line" d="M 930 704 L 674 704 L 674 736"/>
+  <path class="line" d="M 930 704 L 1140 704 L 1140 736"/>
+  <rect class="status-ready" x="72" y="744" width="364" height="122" rx="16"/>
+  <text class="state" x="98" y="784">READY</text>
+  <text class="body" x="98" y="818">Mappings confirmed; expected labels</text>
+  <text class="body" x="98" y="844">and operational measures available.</text>
+
+  <rect class="status-warning" x="492" y="744" width="364" height="122" rx="16"/>
+  <text class="state" x="518" y="784">WARNING</text>
+  <text class="body" x="518" y="818">Developer reviews a non-blocking gap;</text>
+  <text class="body" x="518" y="844">the warning remains in the run record.</text>
+
+  <rect class="status-blocked" x="912" y="744" width="456" height="122" rx="16"/>
+  <text class="state" x="938" y="784">BLOCKED</text>
+  <text class="body" x="938" y="818">Missing required field, incompatible scope,</text>
+  <text class="body" x="938" y="844">or context/reference condition prevents launch.</text>
+
+  <path class="line" d="M 254 866 L 254 894 L 720 894 L 720 916"/>
+  <path class="line" d="M 674 866 L 674 894 L 720 894"/>
+  <path class="dash" d="M 1140 866 L 1140 894 L 1296 894"/>
+  <text class="small" x="1112" y="918">Return to setup; no launch</text>
+  <rect class="launch" x="492" y="928" width="456" height="52" rx="26"/>
+  <text class="label" x="575" y="960" fill="#31543e">DEVELOPER-CONFIRMED LAUNCH</text>
+  <text class="small" x="500" y="1014">Existing experiment path: Prompt Playground, Agent Playground, or code</text>
+</svg>

@@ -1,0 +1,6 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.arize-tmp-traces/
+node_modules/

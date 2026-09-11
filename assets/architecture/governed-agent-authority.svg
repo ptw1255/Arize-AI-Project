@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1020" viewBox="0 0 1600 1020" role="img" aria-labelledby="title desc">
+  <title id="title">Governed authority of the grocery comparison agent</title>
+  <desc id="desc">The 0.2.0 grocery comparison agent can inspect a bounded schema and author SQL. It can visibly fail through weak searches, errors, empty or truncated results, retries, and budget exhaustion. The Cloudflare Worker enforces read-only SQL policy, bounded execution, evidence validation, and a server-built response. It prohibits mutations, administrative SQL, system-table access, multiple statements, external actions, purchases, and changes to its own controls.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#31536e"/></marker>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172b3a; }
+      .title { font-size: 31px; font-weight: 750; } .subtitle { font-size: 16px; fill: #526878; }
+      .panel { stroke-width: 2.3; } .allow { fill: #eaf7ef; stroke: #398260; } .visible { fill: #fff7e4; stroke: #b88224; } .block { fill: #fff0ef; stroke: #b84e47; }
+      .box { fill: #ffffff; stroke: #7294aa; stroke-width: 2; } .enforce { fill: #eef4fb; stroke: #3979a8; stroke-width: 2.3; }
+      .head { font-size: 21px; font-weight: 720; } .subhead { font-size: 17px; font-weight: 700; } .body { font-size: 15px; fill: #405968; } .small { font-size: 14px; fill: #405968; }
+      .edge { fill: none; stroke: #31536e; stroke-width: 2.5; marker-end: url(#arrow); } .line { fill: none; stroke: #31536e; stroke-width: 2.5; }
+      .label { font-size: 13px; font-weight: 650; fill: #31536e; }
+    </style>
+  </defs>
+  <rect width="1600" height="1020" fill="#ffffff"/>
+  <text x="65" y="62" class="title">Governed authority: observable model choices, enforced application boundaries</text>
+  <text x="65" y="90" class="subtitle">Grocery comparison agent · contract 0.2.1 · limited demonstration lifecycle</text>
+
+  <rect x="60" y="130" width="460" height="510" rx="18" class="panel allow"/>
+  <text x="88" y="170" class="head">Allowed model behavior</text>
+  <text x="88" y="197" class="body">The model acts inside a bounded catalog-search task.</text>
+  <rect x="88" y="225" width="404" height="105" rx="12" class="box"/>
+  <text x="110" y="260" class="subhead">Inspect catalog schema</text><text x="110" y="286" class="body">Two frozen SQLite demonstration tables</text><text x="110" y="310" class="small">Costco and Walmart product fields</text>
+  <rect x="88" y="350" width="404" height="125" rx="12" class="box"/>
+  <text x="110" y="385" class="subhead">Author one read-only SQL query</text><text x="110" y="411" class="body">Uses SELECT or WITH; chooses search and retry</text><text x="110" y="435" class="small">SQL, purpose, results, and policy decision are traced</text>
+  <rect x="88" y="495" width="404" height="115" rx="12" class="box"/>
+  <text x="110" y="530" class="subhead">Recommend within the response contract</text><text x="110" y="556" class="body">Costco · Walmart · either · review · unavailable</text><text x="110" y="580" class="small">Uses returned snapshot evidence; never claims it is live</text>
+
+  <rect x="570" y="130" width="460" height="510" rx="18" class="panel visible"/>
+  <text x="598" y="170" class="head">Allowed to fail — visibly</text>
+  <text x="598" y="197" class="body">Search quality is deliberately observable, not hidden.</text>
+  <rect x="598" y="225" width="404" height="94" rx="12" class="box"/>
+  <text x="620" y="260" class="subhead">Weak or irrelevant candidate selection</text><text x="620" y="286" class="body">Lexical overlap can produce poor evidence</text>
+  <rect x="598" y="338" width="404" height="94" rx="12" class="box"/>
+  <text x="620" y="373" class="subhead">Empty result, SQL error, or truncation</text><text x="620" y="399" class="body">Returned to the model for a material retry decision</text>
+  <rect x="598" y="451" width="404" height="94" rx="12" class="box"/>
+  <text x="620" y="486" class="subhead">Repeated work or early stopping</text><text x="620" y="512" class="body">Calls, retries, tokens, and stop reason remain visible</text>
+  <rect x="598" y="564" width="404" height="46" rx="12" class="box"/>
+  <text x="620" y="594" class="subhead">Traces and evaluation cases preserve visible failures</text>
+
+  <rect x="1080" y="130" width="460" height="510" rx="18" class="panel block"/>
+  <text x="1108" y="170" class="head">Prohibited authority</text>
+  <text x="1108" y="197" class="body">The model cannot cross these server-enforced boundaries.</text>
+  <rect x="1108" y="225" width="404" height="110" rx="12" class="box"/>
+  <text x="1130" y="260" class="subhead">Data mutation or administration</text><text x="1130" y="286" class="body">INSERT, UPDATE, DELETE, DDL, PRAGMA,</text><text x="1130" y="310" class="small">transactions, extensions, and system tables</text>
+  <rect x="1108" y="355" width="404" height="110" rx="12" class="box"/>
+  <text x="1130" y="390" class="subhead">Unsafe query structure</text><text x="1130" y="416" class="body">Multiple statements, comments, or SQL over</text><text x="1130" y="440" class="small">the bounded length are rejected before execution</text>
+  <rect x="1108" y="485" width="404" height="125" rx="12" class="box"/>
+  <text x="1130" y="520" class="subhead">External or control-plane actions</text><text x="1130" y="546" class="body">No purchases, carts, orders, data-source writes,</text><text x="1130" y="570" class="small">prompt/policy/model-limit changes, or final-response control</text>
+
+  <rect x="60" y="710" width="1480" height="240" rx="18" class="enforce"/>
+  <text x="88" y="752" class="head">Application enforcement boundary — Cloudflare Worker</text>
+  <rect x="95" y="785" width="250" height="125" rx="12" class="box"/>
+  <text x="117" y="820" class="subhead">Policy gate</text><text x="117" y="846" class="body">SELECT / WITH only</text><text x="117" y="869" class="small">single statement · no comments</text><text x="117" y="890" class="small">no mutations or system tables</text>
+  <rect x="410" y="785" width="250" height="125" rx="12" class="box"/>
+  <text x="432" y="820" class="subhead">Bounded execution</text><text x="432" y="846" class="body">4,000 SQL characters</text><text x="432" y="869" class="small">bounded result rows · model rounds</text><text x="432" y="890" class="small">tokens · latency · rate limits</text>
+  <rect x="725" y="785" width="330" height="125" rx="12" class="box"/>
+  <text x="747" y="820" class="subhead">Evidence and outcome validation</text><text x="747" y="846" class="body">Server checks returned evidence and</text><text x="747" y="869" class="small">requires review for incomplete or failed searches</text><text x="747" y="890" class="small">before building the response</text>
+  <rect x="1120" y="785" width="380" height="125" rx="12" class="box"/>
+  <text x="1142" y="820" class="subhead">Trace and operations record</text><text x="1142" y="846" class="body">Policy decisions, errors, row counts,</text><text x="1142" y="869" class="small">truncation, evidence IDs, tokens, calls,</text><text x="1142" y="890" class="small">retries, outcome, and stop reason</text>
+  <path d="M290 475 V710" class="edge"/><path d="M800 610 V710" class="edge"/><path d="M1310 610 V710" class="edge"/>
+  <text x="315" y="675" class="label">model request</text><text x="823" y="675" class="label">failure signal</text><text x="1330" y="675" class="label">rejection</text>
+</svg>

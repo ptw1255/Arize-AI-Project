@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040" role="img" aria-labelledby="title desc">
+  <title id="title">Grocery comparison agent system architecture</title>
+  <desc id="desc">A hosted web app sends photo uploads to Worker model OCR, then shows a reviewed grocery list. The approved list enters a Cloudflare Worker agent loop that inspects schema and writes model-authored SQL through a read-only gateway to Costco and Walmart D1 catalogs. The server validates evidence and returns a customer result. The Worker sends logs to Cloudflare Logs and OpenTelemetry, OTLP, and OpenInference traces to Arize AX, which feeds a regression dataset and controlled prompt experiment.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#36546f"/></marker>
+    <marker id="telemetry-arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7057a5"/></marker>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172b3a; }
+      .title { font-size: 31px; font-weight: 750; } .subtitle { font-size: 16px; fill: #526878; }
+      .lane { fill: #f3f8fb; stroke: #bfd3df; stroke-width: 2; } .worker { fill: #eef5fa; stroke: #3078a8; stroke-width: 2.5; }
+      .box { fill: #ffffff; stroke: #6f94aa; stroke-width: 2; } .accent { fill: #e7f5ed; stroke: #3d8b69; stroke-width: 2; }
+      .data { fill: #fff7df; stroke: #bd8a28; stroke-width: 2; } .telemetry { fill: #f3eeff; stroke: #7057a5; stroke-width: 2; }
+      .head { font-size: 19px; font-weight: 700; } .body { font-size: 14px; fill: #4f6473; } .small { font-size: 13px; fill: #4f6473; }
+      .edge { fill: none; stroke: #36546f; stroke-width: 2.5; marker-end: url(#arrow); } .dashed { fill: none; stroke: #7057a5; stroke-width: 2.5; stroke-dasharray: 8 7; marker-end: url(#telemetry-arrow); }
+      .tag { font-size: 13px; font-weight: 650; fill: #36546f; } .telemetry-tag { font-size: 13px; font-weight: 650; fill: #7057a5; }
+    </style>
+  </defs>
+  <rect width="1600" height="1040" fill="#ffffff"/>
+  <text x="70" y="60" class="title">Grocery comparison agent: hosted web flow, governed agent boundary, and observability</text>
+  <text x="70" y="88" class="subtitle">Frozen Costco and Walmart catalog snapshots; no live-price, inventory, or local-store availability claim.</text>
+
+  <rect x="60" y="125" width="1480" height="260" rx="18" class="lane"/>
+  <text x="88" y="160" class="head">Customer experience</text>
+  <rect x="95" y="195" width="205" height="120" rx="13" class="box"/>
+  <text x="118" y="235" class="head">Hosted web app</text><text x="118" y="261" class="body">Photo upload</text><text x="118" y="284" class="body">Shopper preferences</text>
+  <rect x="370" y="195" width="215" height="120" rx="13" class="accent"/>
+  <text x="393" y="235" class="head">Worker model OCR</text><text x="393" y="261" class="body">Extract and combine</text><text x="393" y="284" class="body">grocery items</text>
+  <rect x="655" y="195" width="215" height="120" rx="13" class="accent"/>
+  <text x="681" y="235" class="head">Reviewed list</text><text x="681" y="261" class="body">Customer edits and</text><text x="681" y="284" class="body">approves the input</text>
+  <rect x="1190" y="195" width="280" height="120" rx="13" class="box"/>
+  <text x="1214" y="235" class="head">Item-level result UI</text><text x="1214" y="261" class="body">Evidence, snapshot price,</text><text x="1214" y="284" class="body">recommend / review / unavailable</text>
+  <path d="M300 255 H370" class="edge"/><text x="311" y="240" class="tag">/api/ocr</text>
+  <path d="M585 255 H655" class="edge"/>
+  <path d="M870 255 H1010 V445" class="edge"/><text x="882" y="240" class="tag">approved list</text>
+  <path d="M1190 255 H1110 V675" class="edge"/><text x="1117" y="242" class="tag">validated result</text>
+
+  <rect x="60" y="425" width="1110" height="340" rx="18" class="worker"/>
+  <text x="88" y="460" class="head">Cloudflare Worker — comparison request</text>
+  <rect x="95" y="505" width="195" height="150" rx="13" class="box"/>
+  <text x="119" y="544" class="head">Agent loop</text><text x="119" y="570" class="body">Model decides search,</text><text x="119" y="592" class="body">retry, and stop behavior</text><text x="119" y="620" class="small">bounded rounds and calls</text>
+  <rect x="350" y="505" width="190" height="150" rx="13" class="box"/>
+  <text x="374" y="544" class="head">Schema inspection</text><text x="374" y="570" class="body">Bounded SQLite schema</text><text x="374" y="592" class="body">for both catalogs</text>
+  <rect x="600" y="505" width="225" height="150" rx="13" class="box"/>
+  <text x="624" y="544" class="head">Model-authored SQL</text><text x="624" y="570" class="body">Query formation remains</text><text x="624" y="592" class="body">observable in traces</text>
+  <rect x="885" y="505" width="245" height="150" rx="13" class="accent"/>
+  <text x="909" y="536" class="head">Read-only policy gateway</text><text x="909" y="562" class="body">SELECT / WITH only · single statement</text><text x="909" y="585" class="body">blocks mutations and system tables</text><text x="909" y="616" class="small">row, SQL, and work limits</text>
+  <rect x="600" y="685" width="325" height="55" rx="13" class="accent"/>
+  <text x="625" y="718" class="head">Server validation + response builder</text>
+  <path d="M290 580 H350" class="edge"/><path d="M540 580 H600" class="edge"/><path d="M825 580 H885" class="edge"/>
+  <path d="M1010 655 V712 H925" class="edge"/><path d="M600 712 H410 V655" class="edge"/><text x="438" y="699" class="tag">returned evidence</text>
+
+  <rect x="1230" y="465" width="270" height="105" rx="13" class="data"/>
+  <text x="1253" y="503" class="head">Costco D1 catalog</text><text x="1253" y="529" class="body">Frozen snapshot rows</text>
+  <rect x="1230" y="620" width="270" height="105" rx="13" class="data"/>
+  <text x="1253" y="658" class="head">Walmart D1 catalog</text><text x="1253" y="684" class="body">Frozen snapshot rows</text>
+  <path d="M1130 555 H1185 V518 H1230" class="edge"/><path d="M1130 605 H1185 V673 H1230" class="edge"/>
+
+  <rect x="60" y="815" width="430" height="155" rx="18" class="telemetry"/>
+  <text x="88" y="852" class="head">Cloudflare Logs</text><text x="88" y="878" class="body">OCR, request, timeout, error,</text><text x="88" y="901" class="body">and agent-operation events</text>
+  <rect x="610" y="815" width="430" height="155" rx="18" class="telemetry"/>
+  <text x="638" y="852" class="head">Arize AX</text><text x="638" y="878" class="body">OTel / OTLP + OpenInference spans</text><text x="638" y="901" class="body">Agent, model, SQL, and validation</text>
+  <rect x="1250" y="815" width="250" height="155" rx="18" class="telemetry"/>
+  <text x="1278" y="852" class="head">Learning loop</text><text x="1278" y="878" class="body">Trace-derived dataset</text><text x="1278" y="901" class="body">Controlled experiment</text>
+  <path d="M235 655 V790 H275 V815" class="dashed"/><text x="293" y="788" class="telemetry-tag">operational events</text>
+  <path d="M520 505 V790 H825 V815" class="dashed"/><text x="555" y="786" class="telemetry-tag">OpenTelemetry · OTLP · OpenInference</text>
+  <path d="M1040 892 H1250" class="dashed"/><text x="1068" y="878" class="telemetry-tag">dataset + experiment</text>
+</svg>
