@@ -85,3 +85,17 @@ Prompt B and Prompt C ran against the same four cases, catalog versions, runtime
 The evaluation workflow also produced 37 of 44 expected native labels for B and 36 of 44 for C. Provider throttling, a context-window failure, evaluator-scope separation, and all-or-nothing override retry complicated the first trusted comparison. Native evaluators sometimes approved evidence-free abstentions that deterministic evidence checks rejected.
 
 These observations make the preflight the recommended adoption investment. It acts before the developer spends judge calls or interprets an incomplete comparison, and it extends the existing trace-to-dataset and experiment workflows.
+
+[Read the full comparison and evaluator denominator](PART_2_EVALUATE_IMPROVE_DECIDE.md) or [inspect the scrubbed eight-run evidence](../evidence/experiment-runs.json).
+
+## Later observability hypotheses
+
+These are follow-on questions, not additions to the MVP:
+
+- **Cross-request workflow correlation:** preserve one workflow and session identity across separate request traces, including asynchronous human review.
+- **Trace-readiness state:** expose whether root-declared spans and parent links are complete before a trace becomes an evaluation source.
+- **Release facets:** make prompt, model, policy, data, contract, application, and environment versions available as shared filters across traces and experiments.
+- **Evaluation disagreement:** surface semantic-judge results beside deterministic execution invariants and keep the expected, completed, failed, and missing score denominator visible.
+- **Pre-model invocation state:** standardize blocked, failed-to-invoke, timed-out, and disabled outcomes so an application failure remains part of the AI investigation even when no model span exists.
+
+The first three improve incident and regression evidence. The last two improve release confidence. None requires Arize to become the runtime that executes or enforces agent actions.

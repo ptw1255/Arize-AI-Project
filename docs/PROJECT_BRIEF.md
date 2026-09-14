@@ -40,7 +40,9 @@ That behavior creates observable questions:
 
 ![Grocery comparison agent system architecture](../assets/architecture/grocery-agent-system.svg)
 
-The hosted demo sends selected photos to Worker model OCR. OCR ends when the customer approves the returned list; the agent then owns catalog search and comparison. That boundary lets a reviewer separate input errors from agent errors. The Worker exports agent, model, tool, and validation spans to Arize AX through OpenTelemetry, OTLP, and OpenInference conventions; operational events remain available in Cloudflare Logs.
+The hosted demo sends selected photos to Worker model OCR. OCR ends when the customer approves the returned list; the agent then owns catalog search and comparison. OCR and recommendation remain separate request traces because customer review sits between them. A shared workflow identifier connects the requests without presenting review time as one continuous server span.
+
+The application records bounded request metrics and structured events for upload, OCR, agent invocation, validation, and response delivery. Cloudflare Logs provides the runtime operating view; the demonstration also persists an allowlisted application projection in D1 so it can be joined to exact Arize traces. The Worker exports application roots and agent, model, tool, and validation spans through OpenTelemetry, OTLP, and OpenInference conventions.
 
 ## Why I designed the agent this way
 
@@ -62,17 +64,30 @@ The demonstration does not claim live price, promotion, inventory, or local-stor
 
 ## Observability model
 
-I used OpenTelemetry for the trace structure and OpenInference for agent, model, and tool semantics. Arize AX received the agent request, model calls, SQL tool calls, validation result, versions, latency, tokens, call counts, errors, stop reason, and customer outcome.
+I used OpenTelemetry for request and span structure and OpenInference for agent, model, and tool semantics. Shared workflow, request, run, trace, span, version, and environment fields connect the customer result to application and Arize evidence.
 
-I treated the signals as three connected layers:
+| Layer | Question | Evidence in this project |
+| --- | --- | --- |
+| Customer outcome | Did the shopper receive a complete and supported recommendation? | Task outcome, unresolved items, evidence strength, review state, critical relevance, and package comparability |
+| Agent and model | What path did the agent take, and where did it lose evidence or budget? | Agent, LLM, SQL tool, validation, token, retry, stop-reason, and evaluator attributes in Arize |
+| Application | Did OCR, request handling, validation, and response delivery work? | Request roots, status, duration, errors, route, response handling, and structured application events |
+| Platform | Where was the request served, and which dependency performed the work? | Cloudflare serving colo, D1 activity, and model and tool latency |
 
-| Layer | Question |
-| --- | --- |
-| Application health | Did the request run, fail, time out, or hit a service limit? |
-| Agent behavior | Which model and tool steps occurred, what evidence did they return, and why did the run stop? |
-| Customer outcome | Was every item searched, was the evidence relevant, and was the final state supported? |
+The application layer establishes whether the service ran. Arize explains the agent trajectory and the evidence behind the result. Evaluation then tests whether a proposed change improves the customer outcome within the operating envelope. A successful request or span does not prove that the recommendation was complete or correct.
 
-A successful span answers the first two layers only. It does not prove a useful customer result.
+The [verified evidence dashboard](OBSERVABILITY_DASHBOARD.md) makes this boundary concrete for one live OCR-to-agent workflow. It joins two application requests to two exact Arize traces and reports 27 complete spans, four model calls, 17 SQL-tool calls, 59,904 tokens, 31.073 seconds of recorded server time, two D1 request metrics, 26 application events, and the Cloudflare `ATL` serving colo. The execution had zero trace errors and complete parentage, yet the agent outcome was `review_required`. That is the central operating distinction: healthy execution is necessary, but it does not establish customer success.
+
+## Who needs this evidence
+
+| Persona | Job to be done | Consequence of a weak evidence handoff |
+| --- | --- | --- |
+| AI engineer | Determine whether the prompt, tool, catalog data, or evidence contract caused the outcome, then create a reproducible test. | A plausible model answer can hide a retrieval or contract failure, and the next change targets the wrong layer. |
+| Product manager | Decide whether a candidate improves customer quality within the accepted latency, cost, reliability, and governance envelope. | A quality aggregate or green runtime state can support a release even when key evaluations are missing or customer evidence regressed. |
+| SRE | Move from a slow, failed, or incomplete customer request to the exact application request and agent trajectory. | The operator must correlate timestamps across platforms and may miss pre-model failures, partial traces, or the actual dominant latency layer. |
+
+These consequences support the same product proposal; they are not three separate roadmap requests. Evaluation Readiness Preflight is the first investment because the AI engineer's trace-to-experiment handoff supplies the evidence the product manager and SRE later depend on.
+
+The baseline trace changed the runtime contract: an item cannot be labeled `unavailable` until the required retailer searches are complete. The subsequent Prompt B/C experiment did not yield a better prompt. It prevented Prompt C from shipping after the candidate increased coverage but reduced critical relevance and increased time, tool calls, and completion tokens. That result shifted the next test from adding prompt instructions to strengthening the tool and evidence interface.
 
 ## Part 1 result
 
@@ -105,7 +120,7 @@ I compared Prompt B with a coverage-first Prompt C on the same four cases under 
 
 Prompt C completed more work and produced worse evidence at a higher operating cost. I rejected it and kept Prompt B as the deployed demo baseline.
 
-[Read Part 2](PART_2_EVALUATE_IMPROVE_DECIDE.md)
+[Read Part 2](PART_2_EVALUATE_IMPROVE_DECIDE.md) or [inspect the scrubbed run evidence](../evidence/experiment-runs.json).
 
 ## Evaluation approach
 
@@ -160,6 +175,7 @@ The next work should isolate five questions:
 - [Opportunities to improve](FRICTION_LOG.md)
 - [Data and evidence boundaries](DATA_AND_EVIDENCE.md)
 - [Product point of view](PRODUCT_POINT_OF_VIEW.md)
+- [End-to-end evidence dashboard](OBSERVABILITY_DASHBOARD.md)
 - [AI coding-tool use](AI_TOOL_USE.md)
 - [Agent definition](AGENT_DEFINITION.md)
 - [Future hypotheses](FUTURE_HYPOTHESES.md)

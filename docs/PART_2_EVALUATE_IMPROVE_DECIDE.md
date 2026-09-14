@@ -26,7 +26,7 @@ The Part 1 diagnostic trace used contract `0.1.0` and exposed the false unavaila
 | Prompt B / `search-policy-v1` | Deployed demo baseline |
 | Prompt C / `search-policy-v2.2` | Coverage-first candidate |
 
-The public application stayed on Prompt B. I ran B and C through a separate experiment endpoint that accepted only those two versions.
+The hosted application stayed on Prompt B. I ran B and C through a separate experiment endpoint that accepted only those two versions.
 
 - [Open Prompt B in Arize AX](https://app.arize.com/organizations/QWNjb3VudE9yZ2FuaXphdGlvbjo0OTg1ODpuWmlx/spaces/U3BhY2U6NTM1NjU6aW1TSw==/datasets/RGF0YXNldDozNjQ2OTQ6YVlxdQ==/experiments/compare?experimentId=RXhwZXJpbWVudDoxNDIxMjY6b201Uw%3D%3D) (workspace access required)
 - [Open Prompt C in Arize AX](https://app.arize.com/organizations/QWNjb3VudE9yZ2FuaXphdGlvbjo0OTg1ODpuWmlx/spaces/U3BhY2U6NTM1NjU6aW1TSw==/datasets/RGF0YXNldDozNjQ2OTQ6YVlxdQ==/experiments/compare?experimentId=RXhwZXJpbWVudDoxNDIxMjc6RDJIYQ%3D%3D) (workspace access required)
@@ -66,7 +66,7 @@ Native step efficiency moved in the opposite direction, from 100% to 66.7%.
 
 Those two charts were enough to reject a one-metric decision. I exported the runs, attached deterministic annotations, and inspected the source outputs and traces.
 
-The scrubbed [run-level evidence artifact](../evidence/experiment-runs.json) contains all four rows for each variant. It preserves the fields needed to verify the decision without publishing prompts, credentials, raw payloads, or unnecessary Arize identifiers. Its reconciliation block independently derives the public aggregate table and reports no mismatches.
+The scrubbed [run-level evidence artifact](../evidence/experiment-runs.json) contains all four rows for each variant. It preserves the fields needed to verify the decision without including prompts, credentials, raw payloads, or unnecessary Arize identifiers. Its reconciliation block independently derives the reported aggregate table and reports no mismatches.
 
 ## Verified results
 

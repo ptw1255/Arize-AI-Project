@@ -19,11 +19,11 @@ This post-run record names the configuration used for both variants. It separate
 
 | Component | Controlled setting | Evidence boundary |
 | --- | --- | --- |
-| Agent model | `gpt-4o-mini` is the Worker’s configured fallback through an OpenAI-compatible interface; the controlled-run `MODEL_NAME` override is not independently captured in the public evidence | A sampled Prompt B trace export returned one root `CHAIN` span with the run input, output, tool-call summary, and usage totals, but no child LLM span or model-name attribute. The exact deployed override is therefore unknown here. |
+| Agent model | `gpt-4o-mini` is the Worker’s configured fallback through an OpenAI-compatible interface; the controlled-run `MODEL_NAME` override is not independently captured in the reviewer evidence | A sampled Prompt B trace export returned one root `CHAIN` span with the run input, output, tool-call summary, and usage totals, but no child LLM span or model-name attribute. The exact deployed override remains unknown in this evidence. |
 | Agent generation | Temperature `0`; `max_completion_tokens` `4,000`; tool choice `auto` | `top_p`, seed, and other provider defaults were not set or captured. |
 | Agent contract and lifecycle | Contract `0.2.0`; lifecycle `limited`; environment `demo` | Both variants used the same state invariant: incomplete or failed searches return `review`. |
 | Prompt and policy | B / `search-policy-v1`; C / `search-policy-v2.2` | The prompt/policy pair was the intended independent variable. |
-| Worker path | Authenticated `POST /api/experiment`; normal scenario; model-executing mode; B/C selection only | The public hosted demo remained pinned to Prompt B. |
+| Worker path | Authenticated `POST /api/experiment`; normal scenario; model-executing mode; B/C selection only | The hosted demo remained pinned to Prompt B. |
 | Catalogs | Frozen D1 snapshots: `costco-runtime-v1` and `walmart-runtime-v1` | The catalogs are demonstration data, not live price, inventory, promotion, or local-store data. |
 | Evaluation dataset | `grocery-agent-regression-cases`, version `prompt-b-vs-c-reference-v1` | Four observed trace-derived cases with reference behavior; the same version was used for B and C. |
 | Arize-native evaluator groups | Eight span-template evaluators and three trace-template evaluators | Their models are provider-managed by Arize. Individual judge model IDs, versions, and generation settings were not captured in the task exports. |

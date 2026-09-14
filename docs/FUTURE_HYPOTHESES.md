@@ -32,11 +32,11 @@ The Prompt B/C comparison answered one question: forcing complete search did not
 
 **Decision:** Keep the plan if it preserves relevance and coverage while reducing the operating cost measured in Prompt C.
 
-## 4. Create one trace across OCR, review, and agent execution
+## 4. Correlate two request traces across human review
 
-**Opportunity to improve:** OCR and comparison are separate requests. A hard timeout can appear in Cloudflare logs without a complete Arize trace.
+**Opportunity to improve:** OCR and comparison are separate requests because human review is an asynchronous boundary. A hard timeout can still appear in Cloudflare logs without a complete Arize trace.
 
-**Hypothesis:** Propagating one workflow ID from upload through comparison and exporting partial spans during execution will reduce uncorrelated and unobserved attempts.
+**Hypothesis:** Propagating one workflow and session identifier across both request traces, while exporting partial spans during execution, will reduce uncorrelated and unobserved attempts without inventing one continuous server span around human review.
 
 **Measure:** percentage of customer attempts with a complete cross-system record, time to locate an incomplete attempt, and percentage of timed-out runs with partial trace evidence.
 

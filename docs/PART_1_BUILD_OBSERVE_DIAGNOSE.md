@@ -56,7 +56,7 @@ I wanted the model to make observable decisions. I allowed it to inspect the cat
 
 ![Agent authority](../assets/architecture/governed-agent-authority.svg)
 
-The application enforces read-only, single-statement SQL, blocks administrative operations and system-table access, limits returned rows, caps model and tool work, and validates the final response. It also pins the public demo to the server-selected deployed demo baseline. Prompt overrides are available only through the controlled experiment path.
+The application enforces read-only, single-statement SQL, blocks administrative operations and system-table access, limits returned rows, caps model and tool work, and validates the final response. It also pins the hosted demo to the server-selected deployed demo baseline. Prompt overrides are available only through the controlled experiment path.
 
 The model can still write ineffective SQL, choose a weak candidate, repeat work, or stop too early. Those behaviors form the experiment evidence. The model cannot mutate the retailer data or change its own operating limits.
 

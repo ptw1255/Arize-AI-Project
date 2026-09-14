@@ -19,4 +19,16 @@ AI output required verification. Three examples changed the work:
 2. Prompt C produced invalid item IDs and then invalid retailer identity. I kept the runtime contract fixed and revised only the candidate prompt so the traces preserved those failures.
 3. Earlier documentation described a different OCR boundary than the hosted demo. The hosted demo sends photos to the Cloudflare Worker for model-based OCR. I corrected the shared write-up to match the system reviewers can run.
 
-I verified generated work with the repository test suite, trace inspection, Arize experiment exports, deterministic annotations, screenshot review, and manual comparison of evaluator disagreements. I did not use generated scores or reconstructed screenshots.
+## Product feedback from the assisted workflow
+
+The implementation work made several UI ambiguities concrete:
+
+- a trace can be accepted before every expected span is queryable;
+- evaluator mappings can appear plausible without proving that the selected field answers the evaluator's question;
+- span-, trace-, and session-level evaluator scope becomes clear too late;
+- provider throttling and context failures do not produce an obvious expected-versus-completed denominator;
+- operational fields can exist in trace or experiment output without appearing in the comparison view.
+
+These observations are recorded in the [opportunities-to-improve log](FRICTION_LOG.md). They led to the Evaluation Readiness Preflight proposal; the coding tool did not select or prioritize that investment.
+
+I verified generated work with the repository test suite, trace inspection, Arize experiment exports, deterministic annotations, and manual comparison of evaluator disagreements. I did not use generated scores or model-generated or hand-reconstructed evidence screenshots.
