@@ -90,7 +90,7 @@ For the pilot, a trusted score means that the developer confirmed the mappings, 
 - percentage of invalid evaluator mappings caught before judge calls begin;
 - developer confirmation that the comparison answers the intended product question.
 
-## Next hypothesis: agent service objectives
+## Future discovery: agent service objectives
 
 Arize already provides [custom metrics](https://arize.com/docs/ax/observe/projects/custom-metrics-api), [dashboards](https://arize.com/docs/ax/observe/dashboards), [continuous evaluations](https://arize.com/docs/ax/evaluate/online-evals/setting-up-online-evals), monitors, and [alert integrations](https://arize.com/docs/ax/machine-learning/machine-learning/how-to-ml/monitors/configure-monitors/notifications-and-integrations). The next opportunity is not another threshold screen. It is a versioned operating contract that lets a team define what acceptable agent service means and apply the same definition during experiments and in production.
 
@@ -115,6 +115,29 @@ The escalation policy should distinguish a warning from an incident. A warning c
 
 This is a discovery item after the Preflight MVP. Before committing to it, I would validate indicator definitions, ownership, measurement windows, error-budget expectations, and escalation integrations with AI engineers, SREs, and product owners operating shared production agents.
 
+### Product use case: govern a shared production agent
+
+**Target user:** An SRE responsible for an agent platform shared by several product teams.
+
+**Situation:** A team promotes a new prompt, model, or tool-policy version. HTTP success remains healthy, but supported task completion falls, no-progress loops rise, or tool-authorization failures increase. The SRE can see that the service is running but cannot tell whether the agent is still meeting its customer and governance commitments.
+
+**Job:** Determine whether the agent is meeting its approved service contract, identify the affected release and trace cohort, notify the owner, and choose a permitted response.
+
+The product workflow would be:
+
+1. An AI engineer and product manager define a versioned objective set covering customer outcome, reliability, efficiency, and governance.
+2. The SRE attaches that objective set to an agent, environment, owner, and release cohort.
+3. Arize evaluates production runs and correlates a breach with prompt, model, policy, contract, dataset, application, and infrastructure versions.
+4. The breach opens the affected trace cohort, identifies the indicator that crossed its team-defined threshold, and routes the alert to the named owner.
+5. The SRE chooses an approved action: continue observing, require human review, degrade to a bounded path, or request a rollback.
+6. The customer runtime executes the control and reports the action and subsequent outcome as audit evidence.
+
+The user outcome is one evidence contract that connects customer quality to latency, cost, tool behavior, and policy state. The SRE can investigate a breach without manually joining an application dashboard, agent traces, evaluation results, and release metadata. Product and engineering teams use the same measures to decide whether a candidate may ship and whether the production agent remains healthy.
+
+Arize would define, measure, explain, and route the evidence. The application would retain enforcement authority. That boundary gives the SRE operational control without requiring Arize to become the execution runtime.
+
+I would validate this use case by measuring time from breach to affected cohort, the percentage of breaches with an owner, release version, and selected action, false-escalation rate, and the percentage of release decisions that use the same indicators later monitored in production. These are validation measures, not product claims from this four-case experiment.
+
 ## Evidence from Part 2
 
 Prompt B and Prompt C ran against the same four cases, catalog versions, runtime, contract, model configuration, and evaluator versions. Prompt C improved native task completion from 75% to 100%, but critical product relevance fell from three of four cases to zero, total elapsed time increased 93.9%, tool calls increased 45.8%, and completion tokens increased 132.5%.
@@ -125,7 +148,7 @@ These observations make the preflight the recommended adoption investment. It ac
 
 [Read the full comparison and evaluator denominator](PART_2_EVALUATE_IMPROVE_DECIDE.md) or [inspect the scrubbed eight-run evidence](../evidence/experiment-runs.json).
 
-## Later observability hypotheses
+## Other future discovery
 
 These are follow-on questions, not additions to the MVP:
 

@@ -38,7 +38,7 @@ It keeps four states separate:
 | Agent result | `review_required` |
 | Agent stop reason | `completed` |
 
-The final two rows matter. The agent completed its permitted loop, and the application returned successfully, but the result still required review. The dashboard does not translate a green HTTP status or an `OK` span into a claim of customer success.
+The final two rows matter. The agent completed its permitted loop, and the application returned successfully, but the result still required review. Zero unresolved items means search coverage was complete. Evidence or package rules can still require customer confirmation. The dashboard does not translate a green HTTP status or an `OK` span into a claim of customer success.
 
 ## Trace-readiness finding
 

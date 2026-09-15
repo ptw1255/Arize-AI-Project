@@ -1,33 +1,38 @@
 # Arize AI Project
 
-## Grocery agent observability case study
+## 60-second brief
 
-I built a grocery comparison agent, traced its decisions in Arize AX, converted observed outcome gaps into a regression dataset, and tested a coverage-first prompt against the deployed demo baseline.
-
-The candidate completed more searches and produced worse customer evidence at a higher operating cost. I rejected it.
+| Question | Answer |
+| --- | --- |
+| What did I build? | A grocery comparison agent that writes bounded, read-only SQL against frozen Costco and Walmart catalogs. |
+| Why this agent? | Model-authored queries expose search choice, retries, evidence selection, stopping behavior, latency, and token cost. |
+| What did Arize reveal? | A run can complete without runtime errors and still return incomplete or irrelevant customer evidence. |
+| What did I test? | Prompt B against a coverage-first Prompt C on four trace-derived cases under the same model, catalogs, runtime, contract, and evaluators. |
+| What did I decide? | Retain Prompt B. Prompt C searched more items and reduced relevance while increasing time, tool calls, and completion tokens. |
+| What should Arize build? | Evaluation Readiness Preflight: validate dataset fields, evaluator scope, context size, lineage, operational measures, and expected score coverage before the first scored experiment. |
 
 This repository is private and provided only for Arize's take-home review. No license is granted for reuse or redistribution.
 
-## Five product decisions
+## Decision record
 
-| Decision | Why it mattered |
-| --- | --- |
-| Use a familiar shopping decision with imperfect evidence. | Grocery comparison made relevance, package compatibility, incomplete coverage, and unsupported certainty visible without requiring a complex agent. |
-| Let the agent write SQL, but keep authority in the application. | Model-authored queries exposed search strategy, retries, and ineffective behavior in traces. The application still enforced read-only access, budgets, evidence validation, and final-response rules. |
-| Measure customer success separately from execution health. | A run with `OK` spans could still return incomplete or irrelevant recommendations. Customer outcome, agent behavior, application health, and platform health therefore remained separate evidence layers. |
-| Correct the evidence contract before comparing prompts. | The baseline showed that unsearched items could be called unavailable. Contract `0.2.0` fixed that state invariant for both variants, preventing the correction from being misattributed to Prompt C. |
-| Reject the candidate and invest in evaluation readiness. | Prompt C completed more searches but reduced critical relevance and increased time, tool calls, and completion tokens. I retained Prompt B and proposed an Evaluation Readiness Preflight to make future comparisons trustworthy before judge spend begins. |
-
-## Five-minute reviewer path
-
-| Time | Open | What it shows |
+| Evidence | Interpretation | Decision |
 | --- | --- | --- |
-| 0:00–0:40 | [Project brief](docs/PROJECT_BRIEF.md) | The customer decision, the controlled data boundary, and why the agent writes SQL. |
-| 0:40–1:25 | [Application observability dashboard](docs/OBSERVABILITY_DASHBOARD.md) | Request health, latency, logs, serving edge, and the Arize evidence that completes the run. |
-| 1:25–2:25 | [Part 1 — Build, observe, and diagnose](docs/PART_1_BUILD_OBSERVE_DIAGNOSE.md) | The baseline trace evidence and the customer-outcome gap that started the experiment. |
-| 2:25–3:40 | [Part 2 — Evaluate, improve, and decide](docs/PART_2_EVALUATE_IMPROVE_DECIDE.md) | The fixed test set, B/C result, evaluator coverage, and release decision. |
-| 3:40–4:30 | [Product point of view](docs/PRODUCT_POINT_OF_VIEW.md) | The proposed Evaluation Readiness Preflight and the adoption gap it addresses. |
-| 4:30–5:00 | [Agent definition](docs/AGENT_DEFINITION.md) and [evidence index](docs/EVIDENCE_INDEX.md) | The agent contract, its controls, and the source for each screenshot or Arize record. |
+| Completed searches increased from 10/17 to 17/17. | Prompt C achieved its coverage target. | Count as an improvement. |
+| Critical product relevance fell from 3/4 to 0/4. | Additional searches did not produce usable customer evidence. | Fail the quality gate. |
+| Total elapsed time increased 93.9%. | The candidate increased customer wait. | Fail the operating-envelope gate. |
+| Tool calls increased 45.8%; completion tokens increased 132.5%. | The candidate consumed more work per test set. | Fail the efficiency gate. |
+| Native and deterministic evaluators disagreed; B produced 37/44 labels and C produced 36/44. | One aggregate could support the wrong release decision, and evaluator coverage was incomplete. | Inspect run evidence and retain missing labels. |
+| Prompt C failed the quality and operating gates. | Coverage alone did not improve the customer result. | Keep Prompt B deployed. |
+
+## Reviewer path: the assignment in three parts
+
+| Part | Reviewer question | Primary artifact |
+| --- | --- | --- |
+| 1. Build and observe | What did I build, why is it an agent, and what did the trace reveal? | [Part 1 — Build, observe, and diagnose](docs/PART_1_BUILD_OBSERVE_DIAGNOSE.md) |
+| 2. Evaluate and decide | What changed, how did I measure it, and should it ship? | [Part 2 — Evaluate, improve, and decide](docs/PART_2_EVALUATE_IMPROVE_DECIDE.md) |
+| 3. Propose an investment | Which observed adoption gap should Arize address, why first, and what is the MVP? | [Product point of view](docs/PRODUCT_POINT_OF_VIEW.md) |
+
+Supporting evidence: [project brief](docs/PROJECT_BRIEF.md), [application observability dashboard](docs/OBSERVABILITY_DASHBOARD.md), [agent definition](docs/AGENT_DEFINITION.md), [evidence index](docs/EVIDENCE_INDEX.md), [AI tool-use disclosure](docs/AI_TOOL_USE.md), and [assignment mapping](docs/ASSIGNMENT_MAPPING.md).
 
 [Open the hosted demo](https://grocery.parkerwall-dev.workers.dev/). The app is access-controlled; temporary reviewer credentials are supplied separately in the submission email. See [reviewer access](docs/REVIEWER_ACCESS.md).
 
@@ -88,7 +93,7 @@ The trace showed the difference between execution success and customer success. 
 
 ## Experiment result
 
-I added four observed runs to the `grocery-agent-regression-cases` dataset and compared Prompt B with Prompt C under the same model, catalogs, runtime, evaluator versions, and contract `0.2.0`. That shared contract required completed searches of both retailers before an item could be called unavailable. The correction from `0.1.0` was applied before both variants and is not counted as a Prompt C improvement.
+I added four observed runs to the `grocery-agent-regression-cases` dataset and compared Prompt B with Prompt C under the same OpenAI `gpt-4o-mini` agent configuration, catalogs, runtime, evaluator versions, and contract `0.2.0`. That shared contract required completed searches of both retailers before an item could be called unavailable. The correction from `0.1.0` was applied before both variants and is not counted as a Prompt C improvement.
 
 | Outcome | Prompt B | Prompt C |
 | --- | ---: | ---: |
@@ -121,29 +126,15 @@ Arize already supports trace inspection, trace-to-dataset conversion, evaluators
 | Horizon | Product decision |
 | --- | --- |
 | Build first | Evaluation Readiness Preflight, because the completed dogfooding workflow directly exposed the setup and evidence gap. |
-| Validate next | Agent service indicators, objectives, and escalation for teams operating shared production agents. The contract would connect customer outcome, reliability, efficiency, and governance thresholds across experiments and live monitoring. |
+| Validate next | The SRE governance use case for teams operating shared production agents. A versioned service contract would connect customer outcome, reliability, efficiency, and governance thresholds across experiments and live monitoring. |
 | Preserve the boundary | Arize should define, measure, explain, and communicate an objective breach. The customer application should retain authority to stop, reroute, degrade, or require human review. |
 
-[Read the prioritization and agent-service-objective hypothesis](docs/PRODUCT_POINT_OF_VIEW.md#prioritization-across-the-observed-opportunities).
+[Read the prioritization and SRE governance use case](docs/PRODUCT_POINT_OF_VIEW.md#product-use-case-govern-a-shared-production-agent).
 
 ## Why the agent writes SQL
 
 I intentionally kept query formation inside the agent boundary. Model-authored SQL made schema interpretation, query choice, retries, candidate selection, and stopping behavior visible in Arize. The application limited the consequences through read-only execution, work budgets, evidence validation, and a server-built response.
 
 This design exposed the search and decision behavior the assignment asked me to investigate. A fixed search function would have moved most of that behavior into application code.
-
-## Supporting material
-
-- [Assignment mapping](docs/ASSIGNMENT_MAPPING.md)
-- [Application observability dashboard](docs/OBSERVABILITY_DASHBOARD.md)
-- [Screenshot evidence index](docs/EVIDENCE_INDEX.md)
-- [Experiment design](docs/EXPERIMENT_DESIGN.md)
-- [Opportunities to improve](docs/FRICTION_LOG.md)
-- [Product point of view](docs/PRODUCT_POINT_OF_VIEW.md)
-- [Data and evidence boundaries](docs/DATA_AND_EVIDENCE.md)
-- [Part 2 execution record](docs/PART_2_PLAN.md)
-- [AI coding-tool use and verification](docs/AI_TOOL_USE.md)
-- [Agent definition](docs/AGENT_DEFINITION.md)
-- [Future hypotheses](docs/FUTURE_HYPOTHESES.md)
 
 Arize links require access to the originating workspace. Screenshots are included so the argument does not depend on that access.

@@ -17,7 +17,7 @@ Part 1 produced four regression cases from observed traces:
 
 I wrote the reference behavior before running either variant. The reference required complete Costco and Walmart search, category-compatible evidence, shopper-aware reasoning, truthful uncertainty, and no live-data claim. It did not prescribe a retailer winner.
 
-I held the model, catalog versions, Worker path, database, SQL gateway, response contract, cases, and evaluator versions constant. The exact settings, including the agent model and the separately provider-managed evaluator model group, are in the [controlled configuration record](EXPERIMENT_DESIGN.md#controlled-configuration-record). Both variants used contract `0.2.0`: `unavailable` required completed Costco and Walmart searches, while incomplete or failed searches returned `review`. The prompt and search policy were the independent variable.
+I held the OpenAI `gpt-4o-mini` agent configuration, catalog versions, Worker path, database, SQL gateway, response contract, cases, and evaluator versions constant. The exact settings, including the separately provider-managed evaluator model group, are in the [controlled configuration record](EXPERIMENT_DESIGN.md#controlled-configuration-record). Both variants used contract `0.2.0`: `unavailable` required completed Costco and Walmart searches, while incomplete or failed searches returned `review`. The prompt and search policy were the independent variable.
 
 The Part 1 diagnostic trace used contract `0.1.0` and exposed the false unavailable state. I introduced `0.2.0` before running either B or C. The experiment does not count that shared correction as a Prompt C improvement.
 

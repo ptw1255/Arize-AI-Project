@@ -19,7 +19,7 @@ This post-run record names the configuration used for both variants. It separate
 
 | Component | Controlled setting | Evidence boundary |
 | --- | --- | --- |
-| Agent model | `gpt-4o-mini` is the Worker’s configured fallback through an OpenAI-compatible interface; the controlled-run `MODEL_NAME` override is not independently captured in the reviewer evidence | A sampled Prompt B trace export returned one root `CHAIN` span with the run input, output, tool-call summary, and usage totals, but no child LLM span or model-name attribute. The exact deployed override remains unknown in this evidence. |
+| Agent model | OpenAI `gpt-4o-mini` through an OpenAI-compatible interface | The 25-span Prompt B diagnostic trace `8dda9755f410fbdb64660809779cd9fe` contains eight LLM spans; every `llm.model_name` value is `gpt-4o-mini`. Prompt B and Prompt C then used the same Worker model configuration. The scrubbed experiment export does not repeat the model field, so the trace is the retained model-lineage record. |
 | Agent generation | Temperature `0`; `max_completion_tokens` `4,000`; tool choice `auto` | `top_p`, seed, and other provider defaults were not set or captured. |
 | Agent contract and lifecycle | Contract `0.2.0`; lifecycle `limited`; environment `demo` | Both variants used the same state invariant: incomplete or failed searches return `review`. |
 | Prompt and policy | B / `search-policy-v1`; C / `search-policy-v2.2` | The prompt/policy pair was the intended independent variable. |
