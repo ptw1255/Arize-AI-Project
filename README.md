@@ -40,6 +40,20 @@ Supporting evidence: [project brief](docs/PROJECT_BRIEF.md), [application observ
 
 This repository includes the agent definition, a [scrubbed executable reference](agent/README.md), and the evidence needed to review the case study. The reference preserves the agent’s contract, tool loop, policy gateway, validation boundary, and OpenInference/OTLP export without including the catalog, credentials, account configuration, or private application material.
 
+## What I built and learned
+
+The customer uploads recipe or grocery-list photos, reviews the extracted items, and asks an agent to compare Costco and Walmart. I intentionally kept SQL query formation inside the agent boundary so Arize could expose schema interpretation, search choice, retries, evidence selection, stopping behavior, latency, and token use. The application limits the consequences through read-only execution, work budgets, evidence validation, and a server-built response.
+
+![Current deployed demo result](assets/screenshots/19-current-deployed-demo-result.jpg)
+
+The first 14-item run completed 25 spans with `OK` status, yet only seven items were fully searched. Water matched canned chicken “in Water,” celery matched celery salt, carrots matched a prepared meal, and unsearched items were described as unavailable. The trace made the product opportunity concrete: execution success did not guarantee a useful customer outcome.
+
+I converted that behavior into four regression cases, defined reference behavior, and compared Prompt B with a coverage-first Prompt C. Both variants used the same OpenAI `gpt-4o-mini` configuration, catalogs, runtime, evaluator versions, and agent contract. Prompt C completed all 17 requested searches, but critical relevance fell from 3/4 to 0/4 while latency, tool calls, and completion tokens increased. I kept Prompt B deployed and moved the next hypothesis to the tool and evidence contract.
+
+The catalogs contain licensed Kaggle records and labeled synthetic additions. They support controlled, repeatable tests and do not represent live price, promotion, inventory, or local-store availability.
+
+[Inspect the baseline trace](docs/PART_1_BUILD_OBSERVE_DIAGNOSE.md), [review the experiment decision](docs/PART_2_EVALUATE_IMPROVE_DECIDE.md), or [verify the scrubbed run export](evidence/experiment-runs.json).
+
 ## Observability boundary and improvement loop
 
 The application records whether photo upload, OCR, list review, request handling, and response delivery worked. A shared `workflow_id` links that application evidence to the agent execution. Arize AX then provides the AI-specific evidence: model rounds, SQL tool calls, returned catalog rows, validation, token use, stopping behavior, and evaluator results.
@@ -64,49 +78,6 @@ flowchart LR
 
 The baseline trace produced one implemented correction: an item cannot be labeled `unavailable` until the agent completes the required retailer searches. The Prompt B/C experiment did not produce a better candidate prompt. It showed that Prompt C increased coverage while reducing relevant evidence and increasing time, tool calls, and completion tokens. Arize gave me enough evidence to keep that regression out of the deployed experience and focus the next test on the tool and evidence interface.
 
-## Product
-
-The customer uploads recipe or grocery-list photos, reviews the extracted items, and asks an agent to compare Costco and Walmart. The agent searches frozen retailer catalogs and returns product evidence, package size, snapshot price, an item-level recommendation, and a machine-readable package-comparison state. The deployed `0.2.1` guard compares raw snapshot prices only for conservatively established equivalent packages. It returns `review` for non-comparable packages and does not perform general unit-price optimization.
-
-[Open the hosted demo](https://grocery.parkerwall-dev.workers.dev/)
-
-![Current deployed demo result](assets/screenshots/19-current-deployed-demo-result.jpg)
-
-This current result uses the app's built-in demo list. The historical [agent recommendation](assets/screenshots/03-agent-recommendation.png) is retained as diagnostic baseline evidence from contract `0.1.0`; it is not the current deployed demo result.
-
-The catalogs contain licensed Kaggle records and labeled synthetic additions. They support repeatable tests and do not represent live price, promotion, inventory, or local-store availability.
-
-## What the baseline trace found
-
-One 14-item run completed 25 spans with `OK` status. The customer result was incomplete and partly irrelevant.
-
-- Seven of 14 items were fully searched.
-- The agent stopped at its model-round limit.
-- Water matched canned chicken “in Water.”
-- Celery matched celery salt.
-- Carrots matched a prepared meal containing carrots.
-- Seven unsearched items were described as unavailable.
-
-The trace showed the difference between execution success and customer success. A completed query can return unrelated evidence. A completed trace can end with an incomplete task.
-
-[Inspect the baseline trace evidence and diagnosis](docs/PART_1_BUILD_OBSERVE_DIAGNOSE.md).
-
-## Experiment result
-
-I added four observed runs to the `grocery-agent-regression-cases` dataset and compared Prompt B with Prompt C under the same OpenAI `gpt-4o-mini` agent configuration, catalogs, runtime, evaluator versions, and contract `0.2.0`. That shared contract required completed searches of both retailers before an item could be called unavailable. The correction from `0.1.0` was applied before both variants and is not counted as a Prompt C improvement.
-
-| Outcome | Prompt B | Prompt C |
-| --- | ---: | ---: |
-| Completed item searches | 10/17 | 17/17 |
-| Critical relevance pass | 3/4 | 0/4 |
-| Total elapsed time | 45.188 s | 87.625 s |
-| Tool calls | 24 | 35 |
-| Completion tokens | 4,033 | 9,376 |
-
-Prompt C met the coverage target, but the customer evidence became less relevant. I kept Prompt B as the deployed demo baseline and moved the next investigation to the tool and evidence contract.
-
-[Inspect the run-level experiment evidence](docs/PART_2_EVALUATE_IMPROVE_DECIDE.md) or [verify the scrubbed eight-run export](evidence/experiment-runs.json).
-
 ## Evaluation approach
 
 I used Arize-native evaluators for semantic judgments such as task completion, grounding, relevance, SQL generation, tool use, and step efficiency. I added deterministic checks for coverage, source identity, supported state, known category collisions, latency, tokens, calls, retries, and errors.
@@ -130,11 +101,5 @@ Arize already supports trace inspection, trace-to-dataset conversion, evaluators
 | Preserve the boundary | Arize should define, measure, explain, and communicate an objective breach. The customer application should retain authority to stop, reroute, degrade, or require human review. |
 
 [Read the prioritization and SRE governance use case](docs/PRODUCT_POINT_OF_VIEW.md#product-use-case-govern-a-shared-production-agent).
-
-## Why the agent writes SQL
-
-I intentionally kept query formation inside the agent boundary. Model-authored SQL made schema interpretation, query choice, retries, candidate selection, and stopping behavior visible in Arize. The application limited the consequences through read-only execution, work budgets, evidence validation, and a server-built response.
-
-This design exposed the search and decision behavior the assignment asked me to investigate. A fixed search function would have moved most of that behavior into application code.
 
 Arize links require access to the originating workspace. Screenshots are included so the argument does not depend on that access.
