@@ -154,15 +154,15 @@ These observations make the preflight the recommended adoption investment. It ac
 
 [Read the full comparison and evaluator denominator](PART_2_EVALUATE_IMPROVE_DECIDE.md) or [inspect the scrubbed eight-run evidence](../evidence/experiment-runs.json).
 
-## Other future discovery
+## Potential ideas for future discovery
 
-These are follow-on opportunities outside the first MVP:
+These are follow-on opportunities to explore after the first MVP:
 
-- **Cross-request workflow correlation:** preserve one workflow and session identity across separate request traces, including asynchronous human review.
-- **Trace-readiness state:** expose whether root-declared spans and parent links are complete before a trace becomes an evaluation source.
-- **Release facets:** make prompt, model, policy, data, contract, application, and environment versions available as shared filters across traces and experiments.
-- **Evaluation disagreement:** surface semantic-judge results beside deterministic execution invariants and keep the expected, completed, failed, and missing score denominator visible.
-- **Pre-model invocation state:** standardize blocked, failed-to-invoke, timed-out, and disabled outcomes so an application failure remains part of the AI investigation even when no model span exists.
-- **Agent service objectives:** carry versioned outcome, reliability, efficiency, and governance thresholds from offline release gates into production monitors and escalation workflows.
+- **Cross-request workflow correlation:** By preserving one workflow and session identity across separate request traces, including asynchronous human review, an AI engineer could follow the complete customer attempt without manually matching timestamps. This would make incomplete workflows easier to investigate and convert into regression cases.
+- **Trace-readiness state:** By showing whether root-declared spans and parent links are still indexing or complete, a developer could determine whether a trace is ready for diagnosis or evaluation. This would reduce the chance of treating a partial trajectory as the final agent behavior.
+- **Release facets:** By making prompt, model, policy, data, contract, application, and environment versions available as shared filters, a product or engineering team could isolate the exact cohort affected by a change. This would connect a regression to its release configuration more quickly.
+- **Evaluation disagreement:** By presenting semantic-judge results beside deterministic execution checks and the expected, completed, failed, and missing score counts, a product manager could see both the result and the strength of its supporting evidence. This would make promote, revise, or hold decisions easier to explain and review.
+- **Pre-model invocation state:** By standardizing blocked, failed-to-invoke, timed-out, and disabled outcomes, an SRE could include attempts that ended before a model span was created. This would provide a more complete view of agent-service reliability across the application and AI boundary.
+- **Agent service objectives:** By carrying versioned outcome, reliability, efficiency, and governance thresholds from offline release gates into production monitoring, teams could use the same definition of success before and after deployment. This would support consistent alerts, escalation, and human-review decisions.
 
-The first three improve incident and regression evidence. The last two improve release confidence. None requires Arize to become the runtime that executes or enforces agent actions.
+Together, these ideas extend evidence continuity from investigation through release and production operations. They remain discovery opportunities. Arize would organize, evaluate, and communicate the evidence, while the customer runtime would retain authority to enforce agent actions.
