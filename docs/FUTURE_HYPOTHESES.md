@@ -44,13 +44,13 @@ The Prompt B/C comparison answered one question: forcing complete search did not
 
 ## 5. Add an Evaluation Readiness Preflight
 
-**Opportunity to improve:** Field mapping, evaluator scope, context size, missing reference evidence, operational measures, and label coverage required manual inspection after task setup.
+**Opportunity to improve:** Arize already supported mappings and previews, but field semantics, evaluator scope, context size, reference evidence, operational measures, label coverage, and lineage still had to be reconstructed into a release decision after task setup.
 
-**Hypothesis:** A preflight will reduce incomplete evaluator calls and shorten the time from a trace-derived case to a trustworthy first comparison.
+**Hypothesis:** A decision-level preflight will reduce incomplete evaluator calls and shorten the time from a trace-derived case to an experiment that can support a promote, revise, or hold decision.
 
-**Measure:** time to first valid score, mapping corrections after launch, evaluator completion rate, missing-label rate, and judge calls rerun.
+**Measure:** time to a decision-ready experiment, mapping corrections after launch, evaluator completion rate, missing-label rate, judge calls rerun, and reviewer ability to reproduce the release decision from the saved record.
 
-**Decision:** Prioritize the feature if it catches the setup conditions observed in this project before the first judge call and does not add another manual configuration step.
+**Decision:** Prioritize the feature if it catches the setup conditions observed in this project before the first judge call, produces one reviewable decision record, and does not add another manual configuration step.
 
 ## 6. Define agent service indicators, objectives, and escalation
 

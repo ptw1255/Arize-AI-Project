@@ -132,13 +132,13 @@ The two methods disagreed on several Prompt C runs. Model judges approved cohere
 
 ## Product recommendation
 
-I would add an **Evaluation Readiness Preflight** between a trace-derived dataset and the first experiment.
+I would add an **Evaluation Readiness Preflight** between a trace-derived dataset and the first experiment. It would extend Arize's existing field mappings and previews into a decision-level check.
 
 ![Proposed Evaluation Readiness Preflight flow](../assets/product/evaluation-readiness-preflight.svg)
 
-The visual separates the current trace-to-dataset and experiment path from the proposed validation layer. A developer confirms the launch. Automated content and prompt changes are excluded.
+The visual starts with the developer's job: turn an observed run into a trustworthy promote, revise, or hold decision. Existing Arize capabilities assemble the dataset, mappings, evaluators, and experiment. The proposed layer validates whether they can produce the complete evidence required by that decision.
 
-It would confirm:
+The developer would state the candidate change, target outcome, quality and operating guardrails, expected evaluators, and required lineage. The preflight would confirm:
 
 - which fields represent task input, output, reference evidence, and tool trajectory;
 - whether selected evaluators use compatible scopes;
@@ -147,13 +147,13 @@ It would confirm:
 - how many labels are expected, completed, failed, or missing;
 - which prompt, policy, model, dataset, and environment versions produced each run.
 
-The proposal comes from setup steps and experiment results that produced incomplete or ambiguous evidence. It extends Arize's existing trace, dataset, evaluator, and experiment workflows.
+The proposal comes from setup steps and experiment results that produced incomplete or ambiguous evidence. The output is a reviewable decision record, not another field-mapping screen.
 
 I would deliver it in three product increments: expose dataset rows beside evaluator requirements, validate confirmed mappings and scope before judge calls, then carry the approved setup into an experiment stub. Candidate mappings would remain visibly inferred until the developer confirms them. That distinction matters because a plausible field match can produce a confident score for a different question than the developer intended.
 
 The first pilot would cover trace-derived datasets in one Arize space, one dataset version, and one evaluator set per preflight. It would reuse the current trace-to-dataset, evaluator, experiment, and lineage components. It would require machine-readable evaluator inputs and scope, stable dataset-version schemas with sample values, and visibility into available operational measures.
 
-The pilot would exclude automatic prompt rewriting, expected-answer generation, dataset mutation, and automatic remediation. I would judge it on median time from **Add to Dataset** to first trusted score and the rate of mapping corrections after the first scored run. A trusted score requires confirmed mappings, the expected evaluator labels, and no unresolved blocking condition.
+The pilot would exclude automatic prompt rewriting, expected-answer generation, dataset mutation, and automatic remediation. I would judge it on median time from **Add to Dataset** to a decision-ready experiment, the rate of mapping corrections after launch, complete evaluator coverage, and whether another reviewer can understand the release decision from the saved record. A decision-ready experiment requires a stated outcome, quality and operating guardrails, confirmed mappings, expected evaluator labels, and complete lineage.
 
 ## Future hypotheses
 

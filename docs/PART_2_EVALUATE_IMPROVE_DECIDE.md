@@ -166,9 +166,9 @@ The remaining questions are recorded as measurable experiments in [Future hypoth
 
 ## Product recommendation
 
-Arize already supports trace inspection, trace-to-dataset conversion, evaluators, and experiment comparison. I would invest in an **Evaluation Readiness Preflight** at the handoff from dataset to experiment.
+Arize already supports trace inspection, trace-to-dataset conversion, field mapping and preview, evaluators, and experiment comparison. I would invest in an **Evaluation Readiness Preflight** that validates those components together against the release decision before evaluator calls begin.
 
-The preflight would show:
+The developer would state the candidate change, target outcome, quality and operating guardrails, expected evaluators, and required lineage. The preflight would then show:
 
 - the task input, prior output, reference, evidence, and trajectory fields;
 - evaluator scope and required mappings;
@@ -177,4 +177,4 @@ The preflight would show:
 - operational measures available for comparison;
 - expected evaluator count and missing-score state.
 
-This addresses the setup and evidence opportunities I found before the first trustworthy comparison. It also builds on workflows that already exist in Arize.
+The output would be one reviewable record showing whether the evidence is ready to support a promote, revise, or hold decision. This addresses the setup and evidence opportunities I found before the first trustworthy comparison while building on workflows that already exist in Arize.

@@ -2,35 +2,35 @@
 
 ## Adoption opportunity
 
-Arize already gives developers a useful path from trace inspection to datasets, evaluators, and experiments. The next opportunity is semantic readiness: helping a developer confirm that a trace-derived example contains the right, separable fields for the task and evaluators they selected.
+Arize already gives developers a useful path from trace inspection to datasets, evaluators, and experiments. It also provides field mapping, automatic matches, sample-value previews, and missing-variable warnings. The next opportunity is decision readiness: confirming that those components will produce the complete evidence needed for the release decision the developer intends to make.
 
 In this project, the dataset existed, but the task input was not named `question`, imported fields were nested, reference evidence was absent, evaluator scopes differed, and operational measures did not automatically appear in the experiment comparison. I could resolve each condition, but only after moving deeper into the workflow. That delayed the moment when I could trust the comparison.
 
 ![Trace-derived dataset with four cases](../assets/screenshots/11-trace-derived-dataset.jpg)
 
-The screenshot also shows why the proposal is narrower than “trace to evaluation.” The trace-to-dataset action already works. The readiness opportunity appears after conversion: token and cost summaries are blank, while the row contract and evaluator mappings still require inspection.
+The screenshot also shows why the proposal is narrower than “trace to evaluation.” The trace-to-dataset action already works. Individual mappings can also be inspected. The readiness opportunity appears at the next level: determining whether the combined task, evaluators, operational measures, and lineage can support a promote, revise, or hold decision.
 
 ## Proposed investment: Evaluation Readiness Preflight
 
-Insert a preflight between **Add to Dataset** and the first scored experiment.
+Insert a decision-level preflight between **Add to Dataset** and the first scored experiment.
 
 ![Proposed Evaluation Readiness Preflight flow](../assets/product/evaluation-readiness-preflight.svg)
 
-The blue steps are the proposed addition. The green steps are existing trace, dataset, and experiment capabilities. A developer confirms the mappings and chooses whether to launch; the preflight does not rewrite prompts or create expected answers.
+The blue step is the proposed addition. The green steps are existing trace, dataset, mapping, evaluator, and experiment capabilities. The developer states the release decision, target outcome, and guardrails. The preflight uses the existing configuration to determine whether the experiment can produce the required evidence.
 
-The preflight would:
+The preflight would validate a decision contract containing:
 
-1. preview the actual dataset-row contract;
-2. identify candidate task input, prior output, retrieved evidence, reference answer, and trajectory fields;
-3. validate each evaluator's required variables and span, trace, or session scope;
-4. flag missing or semantically overlapping mappings;
-5. show prompt, policy, model, dataset, and environment lineage;
-6. state which latency, token, cost, call, retry, and stop measures will be available for comparison;
-7. generate a runnable experiment stub from the confirmed mappings.
+1. the candidate change and promote, revise, or hold decision;
+2. the target customer outcome and quality guardrails;
+3. the latency, token, cost, call, retry, and stop guardrails;
+4. the expected evaluators, scopes, and score count;
+5. the prompt, policy, model, dataset, contract, and environment lineage.
+
+It would use Arize's existing mappings and previews to verify that each required measure can be produced. Missing inputs, incompatible scope, context limits, and ambiguous mappings would appear as specific reasons to review the setup before launch.
 
 ## Why this first
 
-This opportunity sits on the critical path from production evidence to a trustworthy improvement decision. A plausible but incorrect mapping can produce a confident score for a different question than the developer intended. Builders configuring tasks, operators investigating incomplete runs, and product owners deciding whether to ship a change all depend on this handoff.
+This opportunity sits on the critical path from production evidence to a trustworthy improvement decision. A plausible mapping can be valid on its own while the complete experiment still lacks an operating guardrail, evaluator denominator, or lineage field needed for release review. Builders configuring tasks, operators investigating incomplete runs, and product owners deciding whether to ship a change all depend on this handoff.
 
 ## Prioritization across the observed opportunities
 
@@ -38,7 +38,7 @@ I separated changes to this grocery agent from horizontal investments in Arize A
 
 | Opportunity | Evidence from this project | Product scope | Decision |
 | --- | --- | --- | --- |
-| Evaluation Readiness Preflight | Mapping ambiguity, incompatible evaluator scopes, context failure, missing labels, and blank operational comparisons delayed the first trustworthy experiment. | Horizontal developer-adoption path across datasets, evaluators, and experiments. | Build first. It is directly supported by the dogfooding evidence and extends an existing workflow. |
+| Evaluation Readiness Preflight | Mapping ambiguity, incompatible evaluator scopes, context failure, missing labels, and blank operational comparisons prevented the configured experiment from becoming one complete release-decision record. | Horizontal developer-adoption path across datasets, evaluators, and experiments. | Build first. It extends existing mappings and previews into a decision-level check supported by the dogfooding evidence. |
 | Agent service indicators, objectives, and escalation | `OK` spans coexisted with a failed customer outcome; semantic and deterministic evaluations disagreed; operational measures were difficult to carry into the release decision. | Production operating contract for agents shared across teams or promoted into customer-facing environments. | Validate next. The potential reach is high, but this project alone does not establish the correct defaults or buyer requirements. |
 | Trace readiness and cross-request correlation | One exact trace read was temporarily incomplete; hard timeouts could remain only in application logs; OCR and recommendation cross a human-review boundary. | Instrumentation and incident-investigation foundation. | Explore as enabling platform work and a standards hypothesis after the first MVP. |
 | Failed-only evaluator retry and explicit denominators | Provider throttling left 37/44 and 36/44 labels, while override retry repeated successful judge calls. | Evaluation execution quality. | Address within the evaluation workflow while keeping Preflight as the primary proposal. |
@@ -46,23 +46,26 @@ I separated changes to this grocery agent from horizontal investments in Arize A
 
 ## MVP
 
-The MVP can stay focused: a read-only preview and validation step for one trace-derived dataset version and one evaluator set. It would show:
+The MVP can stay focused: a read-only decision check for one trace-derived dataset version and one evaluator set. It would show:
 
+- the stated candidate change and release decision;
+- the target outcome plus quality and operating guardrails;
 - the first three example shapes and representative values;
 - the proposed task input and output mappings;
 - pass, warning, or blocked status for every evaluator;
 - incompatible evaluator scopes;
 - missing reference or evidence fields;
+- expected, available, and missing score counts;
 - version lineage and available operational measures;
 - a confirmed handoff to Prompt Playground, Agent Playground, or code.
 
 ## Product-level delivery sequence
 
-This proposal reuses Arize's current trace viewer, trace-to-dataset action, dataset versions, evaluator definitions, experiments, and lineage metadata. The new work is a readiness check at the handoff between those components.
+This proposal reuses Arize's current trace viewer, trace-to-dataset action, dataset mappings and previews, evaluator definitions, experiments, and lineage metadata. The new work validates those components together against a stated release decision.
 
-1. **Expose the contract.** Show representative rows from the selected dataset version beside the required variables and scope for each evaluator. Mark candidate mappings as inferred until the developer confirms them. An inferred match is a setup aid, not proof that the field carries the intended meaning.
-2. **Validate before spend.** Return pass, warning, or blocked status for the confirmed mappings, evaluator scopes, context size, lineage fields, and available operational measures. A blocked state prevents the first scored run; warnings remain visible in the experiment record.
-3. **Hand off the confirmed setup.** Create an experiment stub that carries the approved mappings and version lineage into Prompt Playground, Agent Playground, or code. The developer still owns the task implementation, references, and launch decision.
+1. **State the decision contract.** Name the candidate change, target outcome, release guardrails, expected evaluators, and required lineage. Reuse the selected dataset version and existing mappings as evidence.
+2. **Validate before spend.** Return pass, warning, or blocked status for the complete decision contract, including mappings, evaluator scopes, context size, score denominator, lineage, and operational measures. A blocked state prevents the first scored run; warnings remain visible in the experiment record.
+3. **Preserve the decision record.** Create an experiment stub that carries the confirmed contract into Prompt Playground, Agent Playground, or code. Store the contract with the results so another reviewer can understand why the candidate was promoted, revised, or held.
 
 The first release depends on machine-readable evaluator variables and scope, a stable dataset-version schema with sample values, prompt and model lineage, and a reliable declaration of which operational measures are present. Ambiguous field names create the main product risk: a plausible inferred mapping can produce a valid-looking score against an unintended input. The preflight should show why it proposed each mapping and ask for confirmation when more than one field could satisfy a variable.
 
@@ -75,10 +78,12 @@ Start with developers creating experiments from trace-derived datasets in one Ar
 The pilot should record:
 
 - median time from **Add to Dataset** to the first trusted score;
+- percentage of experiments with a stated target outcome and release guardrails;
 - percentage of first experiments that produce the expected evaluator labels;
 - percentage of mappings changed after the first scored run;
 - blocked runs by reason, including missing variables, ambiguous mappings, incompatible scope, and context limits;
-- developer confirmation that the scored comparison answered the intended product question.
+- developer confirmation that the scored comparison answered the intended product question;
+- reviewer confirmation that the release decision can be understood from the saved record without reconstructing the setup.
 
 For the pilot, a trusted score means that the developer confirmed the mappings, the run produced its expected labels, and no blocking readiness condition remained. A falling time-to-first-trusted-score with a low post-launch correction rate would support broader rollout. Faster execution paired with frequent mapping corrections would signal false confidence.
 
@@ -88,6 +93,7 @@ For the pilot, a trusted score means that the developer confirmed the mappings, 
 - percentage of scored experiments whose mappings are corrected after launch;
 - percentage of trace-derived datasets that reach a trusted first experiment;
 - percentage of invalid evaluator mappings caught before judge calls begin;
+- percentage of experiments with complete outcome, guardrail, score-coverage, and lineage evidence;
 - developer confirmation that the comparison answers the intended product question.
 
 ## Future discovery: agent service objectives

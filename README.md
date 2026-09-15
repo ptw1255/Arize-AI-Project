@@ -9,7 +9,7 @@
 | What did Arize reveal? | A run can complete without runtime errors and still return incomplete or irrelevant customer evidence. |
 | What did I test? | Prompt B against a coverage-first Prompt C on four trace-derived cases under the same model, catalogs, runtime, contract, and evaluators. |
 | What did I decide? | Retain Prompt B. Prompt C searched more items and reduced relevance while increasing time, tool calls, and completion tokens. |
-| Where is the product opportunity? | Evaluation Readiness Preflight: help developers validate dataset fields, evaluator scope, context size, lineage, operational measures, and expected score coverage before the first scored experiment. |
+| Where is the product opportunity? | Evaluation Readiness Preflight: extend Arize's existing mapping and preview tools into a release-decision check before evaluator calls begin. |
 
 This repository is public so the Arize review team can inspect the case study without a GitHub invitation. The hosted demo and originating Arize workspace remain access-controlled. No license is granted for reuse or redistribution.
 
@@ -86,17 +86,21 @@ The two methods disagreed on several Prompt C runs. That disagreement was materi
 
 ## Product recommendation
 
-I would add an **Evaluation Readiness Preflight** between a trace-derived dataset and the first experiment. It would validate task fields, evaluator scope, context size, reference evidence, version lineage, operational measures, and expected score coverage before judge calls begin.
+Prompt C showed why an agent release decision cannot rely on coverage alone: completed searches rose from 10/17 to 17/17 while critical relevance fell from 3/4 to 0/4, elapsed time increased 93.9%, and evaluator coverage remained incomplete.
+
+Arize already helps developers map fields, preview values, configure evaluators, and compare experiments. The remaining opportunity is to confirm that those components will produce enough evidence for the release decision before evaluator calls begin.
+
+I would add an **Evaluation Readiness Preflight** that validates an experiment against its stated decision, target outcome, quality and operating guardrails, expected score coverage, and version lineage. The result is one reviewable record showing whether the evidence is ready to support a promote, revise, or hold decision.
 
 ![Proposed Evaluation Readiness Preflight flow](assets/product/evaluation-readiness-preflight.svg)
 
-Arize already supports trace inspection, trace-to-dataset conversion, evaluators, and experiment comparison. The proposal tightens the handoff between those existing workflows.
+The proposal builds on Arize's existing workflow. It preserves current mappings and previews, then uses them as inputs to a decision-level readiness check.
 
 ### Decision horizon
 
 | Horizon | Product decision |
 | --- | --- |
-| Build first | Evaluation Readiness Preflight, because the completed dogfooding workflow directly exposed the setup and evidence opportunity. |
+| Build first | Evaluation Readiness Preflight, because the completed dogfooding workflow showed that individually valid components did not guarantee a decision-ready experiment. |
 | Validate next | The SRE governance use case for teams operating shared production agents. A versioned service contract would connect customer outcome, reliability, efficiency, and governance thresholds across experiments and live monitoring. |
 | Preserve the boundary | Arize should define, measure, explain, and communicate an objective breach. The customer application should retain authority to stop, reroute, degrade, or require human review. |
 

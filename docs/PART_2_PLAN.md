@@ -17,7 +17,7 @@ Part 2 preserved Prompt B as the deployed demo baseline and implemented Prompt C
 
 ## Product proposal candidate
 
-The final proposal is an **Evaluation Readiness Preflight** between trace-to-dataset conversion and the first experiment run. The evidence and MVP are documented in [Product point of view](PRODUCT_POINT_OF_VIEW.md).
+The final proposal is an **Evaluation Readiness Preflight** between trace-to-dataset conversion and the first experiment run. It extends existing mappings and previews into a decision-level check covering target outcome, release guardrails, score coverage, operational measures, and lineage. The evidence and MVP are documented in [Product point of view](PRODUCT_POINT_OF_VIEW.md).
 
 Arize already provides trace evaluation, Add to Dataset, native evaluators, and several experiment paths. The proposed preflight would help a developer verify that a trace-derived example contains the input, prior output, reference evidence, trajectory, version lineage, evaluator mappings, and operational measures required for a trustworthy first scored run.
 
