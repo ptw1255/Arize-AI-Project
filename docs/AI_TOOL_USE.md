@@ -15,22 +15,24 @@ My decisions included:
 - keeping Prompt B as the deployed demo baseline while C was tested;
 - choosing not to promote Prompt C after the experiment.
 
-AI output required verification. Three examples changed the work:
+## How I verified assisted work
 
-1. Early plans included more infrastructure and data than the assignment needed. I reduced the scope to one user flow, two tools, one controlled dataset, and one prompt comparison.
-2. Prompt C produced item IDs and retailer values that did not match the contract. I kept the runtime contract fixed and revised only the candidate prompt so the traces preserved that behavior.
-3. Earlier documentation described a different OCR boundary than the hosted demo. The hosted demo sends photos to the Cloudflare Worker for model-based OCR. I corrected the shared write-up to match the system reviewers can run.
+I verified the generated implementation through observable system behavior:
 
-## Product feedback from the assisted workflow
+1. I ran the agent test suite to confirm SQL policy, evidence validation, package comparison, model-tool behavior, and trace-export wiring.
+2. I exercised the hosted photo, OCR, review, and recommendation flow and matched application events to the expected Arize traces using workflow and trace identifiers.
+3. I exported both experiment variants, reconciled all eight runs, checked the expected evaluator denominator, and compared semantic labels with deterministic evidence checks before making the release decision.
 
-The implementation work surfaced several product questions in the UI:
+## Product opportunities to validate
 
-- a trace can be accepted before every expected span is queryable;
-- evaluator mappings can appear plausible without proving that the selected field answers the evaluator's question;
-- span-, trace-, and session-level evaluator scope becomes clear too late;
-- provider throttling and context failures do not produce an obvious expected-versus-completed denominator;
-- operational fields can exist in trace or experiment output without appearing in the comparison view.
+The workflow produced five hypotheses that should be tested with developers before prioritization:
 
-These observations are recorded in the [opportunities-to-improve log](FRICTION_LOG.md). They led to the Evaluation Readiness Preflight proposal; the coding tool did not select or prioritize that investment.
+- **Trace readiness:** Test whether an explicit indexing or complete state helps developers avoid selecting partial traces for diagnosis and evaluation. Measure time to a reliable trace and the rate of evaluations started before every expected span is available.
+- **Mapping confidence:** Test whether showing representative values and the reason behind an inferred evaluator mapping improves mapping accuracy. Measure corrections made after the first scored run and whether the evaluator answered the intended question.
+- **Evaluator scope:** Test whether earlier guidance on span, trace, and session compatibility reduces task rebuilds. Measure configuration attempts, time to a valid task, and scope-related execution errors.
+- **Evaluation coverage:** Test whether an expected, completed, failed, and missing score denominator improves confidence in experiment comparisons. Measure unnecessary reruns, judge-call spend, and release decisions made with incomplete labels.
+- **Operational comparison:** Test whether carrying latency, token, cost, call, retry, and error measures into the comparison view changes release decisions. Measure how often teams inspect separate exports and whether quality improvements are evaluated against operating guardrails.
 
-I verified generated work with the repository test suite, trace inspection, Arize experiment exports, deterministic annotations, and manual comparison of evaluator disagreements. I did not use generated scores or model-generated or hand-reconstructed evidence screenshots.
+Each hypothesis is linked to observed evidence in the [opportunities-to-improve log](FRICTION_LOG.md). I used that evidence to scope the Evaluation Readiness Preflight; each item remains a discovery question until it is validated with users.
+
+All reported scores come from Arize task exports or deterministic checks applied to the experiment runs. The evidence screenshots show the product UI and were not generated or reconstructed.
