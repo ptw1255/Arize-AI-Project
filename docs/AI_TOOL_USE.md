@@ -1,8 +1,10 @@
 # AI coding-tool use
 
-I used AI coding tools to accelerate implementation and documentation. They helped scaffold the Cloudflare Worker, generate repeatable data-preparation code, add trace attributes, write test harnesses, operate the Arize CLI, and organize the evidence in this repository.
+I used AI coding tools as implementation support. I defined the use case, agent boundary, experiment question, controls, evaluation strategy, release criteria, and product recommendation. The tools helped translate those decisions into Cloudflare Worker code, repeatable data-preparation scripts, trace attributes, test harnesses, reviewed Arize CLI operations, and draft documentation.
 
-I owned the product decisions:
+I inspected the hosted workflow, traces, evaluator behavior, experiment exports, screenshots, and final claims before including them here. I retained ownership of the product framing, evidence interpretation, and release decision.
+
+My decisions included:
 
 - separating OCR from the agent boundary;
 - allowing model-authored SQL while keeping server-side limits;
