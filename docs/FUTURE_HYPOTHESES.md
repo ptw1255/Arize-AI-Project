@@ -52,12 +52,30 @@ The Prompt B/C comparison answered one question: forcing complete search did not
 
 **Decision:** Prioritize the feature if it catches the setup conditions observed in this project before the first judge call and does not add another manual configuration step.
 
+## 6. Define agent service indicators, objectives, and escalation
+
+**Opportunity to improve:** This project could show that a request completed, a trace was structurally healthy, and an agent answer was still unsupported. Arize can already visualize custom metrics, run continuous evaluations, monitor signals, and send alerts, but teams still need a shared definition of acceptable agent service across development and production.
+
+**Hypothesis:** A versioned agent service-objective contract will help AI engineers, product managers, and SREs agree on outcome, reliability, efficiency, and governance thresholds before an agent is shared broadly or promoted to production.
+
+**Measure:** percentage of production agents with an approved objective set, time from objective breach to the relevant trace cohort, percentage of release decisions using the same indicators as production monitoring, false escalation rate, and objective ownership coverage.
+
+**Decision:** Continue past discovery only if design partners can define actionable thresholds, owners, and escalation responses without forcing unlike agent use cases into one universal score. Arize should produce evidence and notifications; application runtimes should retain enforcement authority.
+
 ## Recommended order
+
+There are two different roadmaps in this project.
+
+**For the grocery agent:**
 
 1. Preserve retailer identity.
 2. Add candidate relevance checks.
 3. Reduce the cost of complete coverage.
-4. Improve trace continuity.
-5. Validate evaluation readiness in the Arize workflow.
 
-The first three hypotheses improve the customer result. The fourth improves incident evidence. The fifth reduces developer effort when converting that evidence into a release decision.
+**For Arize AX:**
+
+1. Build and test Evaluation Readiness Preflight because it is supported directly by the completed dogfooding workflow.
+2. Improve trace readiness and cross-request correlation as enabling observability work.
+3. Run discovery on agent service objectives and escalation before treating them as a roadmap commitment.
+
+The grocery-agent work improves the customer result. The Arize work improves the path from production evidence to a trusted change and, later, to a shared production operating contract.

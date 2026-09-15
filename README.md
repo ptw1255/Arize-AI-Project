@@ -23,7 +23,7 @@ This repository is private and provided only for Arize's take-home review. No li
 | Time | Open | What it shows |
 | --- | --- | --- |
 | 0:00–0:40 | [Project brief](docs/PROJECT_BRIEF.md) | The customer decision, the controlled data boundary, and why the agent writes SQL. |
-| 0:40–1:25 | [End-to-end evidence dashboard](docs/OBSERVABILITY_DASHBOARD.md) | Customer outcome, application health, exact Arize traces, serving edge, and the correlation boundary. |
+| 0:40–1:25 | [Application observability dashboard](docs/OBSERVABILITY_DASHBOARD.md) | Request health, latency, logs, serving edge, and the Arize evidence that completes the run. |
 | 1:25–2:25 | [Part 1 — Build, observe, and diagnose](docs/PART_1_BUILD_OBSERVE_DIAGNOSE.md) | The baseline trace evidence and the customer-outcome gap that started the experiment. |
 | 2:25–3:40 | [Part 2 — Evaluate, improve, and decide](docs/PART_2_EVALUATE_IMPROVE_DECIDE.md) | The fixed test set, B/C result, evaluator coverage, and release decision. |
 | 3:40–4:30 | [Product point of view](docs/PRODUCT_POINT_OF_VIEW.md) | The proposed Evaluation Readiness Preflight and the adoption gap it addresses. |
@@ -31,7 +31,7 @@ This repository is private and provided only for Arize's take-home review. No li
 
 [Open the hosted demo](https://grocery.parkerwall-dev.workers.dev/). The app is access-controlled; temporary reviewer credentials are supplied separately in the submission email. See [reviewer access](docs/REVIEWER_ACCESS.md).
 
-[Open the verified evidence dashboard](https://grocery.parkerwall-dev.workers.dev/observability?workflow_id=07f8d583-1f91-4caf-ad17-be788ee44edc&trace_id=21122189f4dcf5e942f1e6ff7f888ccd&trace_id=133d26595cc00e63bd93fb903dae4526). It uses the same reviewer credentials and loads one exact OCR-to-recommendation workflow.
+[Open the verified application observability dashboard](https://grocery.parkerwall-dev.workers.dev/observability?workflow_id=07f8d583-1f91-4caf-ad17-be788ee44edc&trace_id=21122189f4dcf5e942f1e6ff7f888ccd&trace_id=133d26595cc00e63bd93fb903dae4526). It uses the same reviewer credentials and loads one exact OCR-to-recommendation workflow.
 
 This repository includes the agent definition, a [scrubbed executable reference](agent/README.md), and the evidence needed to review the case study. The reference preserves the agent’s contract, tool loop, policy gateway, validation boundary, and OpenInference/OTLP export without including the catalog, credentials, account configuration, or private application material.
 
@@ -116,6 +116,16 @@ I would add an **Evaluation Readiness Preflight** between a trace-derived datase
 
 Arize already supports trace inspection, trace-to-dataset conversion, evaluators, and experiment comparison. The proposal tightens the handoff between those existing workflows.
 
+### Decision horizon
+
+| Horizon | Product decision |
+| --- | --- |
+| Build first | Evaluation Readiness Preflight, because the completed dogfooding workflow directly exposed the setup and evidence gap. |
+| Validate next | Agent service indicators, objectives, and escalation for teams operating shared production agents. The contract would connect customer outcome, reliability, efficiency, and governance thresholds across experiments and live monitoring. |
+| Preserve the boundary | Arize should define, measure, explain, and communicate an objective breach. The customer application should retain authority to stop, reroute, degrade, or require human review. |
+
+[Read the prioritization and agent-service-objective hypothesis](docs/PRODUCT_POINT_OF_VIEW.md#prioritization-across-the-observed-opportunities).
+
 ## Why the agent writes SQL
 
 I intentionally kept query formation inside the agent boundary. Model-authored SQL made schema interpretation, query choice, retries, candidate selection, and stopping behavior visible in Arize. The application limited the consequences through read-only execution, work budgets, evidence validation, and a server-built response.
@@ -125,7 +135,7 @@ This design exposed the search and decision behavior the assignment asked me to 
 ## Supporting material
 
 - [Assignment mapping](docs/ASSIGNMENT_MAPPING.md)
-- [End-to-end evidence dashboard](docs/OBSERVABILITY_DASHBOARD.md)
+- [Application observability dashboard](docs/OBSERVABILITY_DASHBOARD.md)
 - [Screenshot evidence index](docs/EVIDENCE_INDEX.md)
 - [Experiment design](docs/EXPERIMENT_DESIGN.md)
 - [Opportunities to improve](docs/FRICTION_LOG.md)

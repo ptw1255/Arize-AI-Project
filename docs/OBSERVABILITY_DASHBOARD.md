@@ -1,4 +1,4 @@
-# End-to-end evidence dashboard
+# Application observability dashboard
 
 [Open the verified hosted workflow](https://grocery.parkerwall-dev.workers.dev/observability?workflow_id=07f8d583-1f91-4caf-ad17-be788ee44edc&trace_id=21122189f4dcf5e942f1e6ff7f888ccd&trace_id=133d26595cc00e63bd93fb903dae4526).
 
@@ -6,7 +6,7 @@ The page uses the demo credentials supplied in the submission email. It loads a 
 
 ## The decision it supports
 
-The dashboard is not a second analytics product. It is an evidence prototype for one operating question:
+The dashboard starts with application telemetry and uses Arize telemetry to complete the run. It is an evidence prototype for one operating question:
 
 > When a customer result needs review, can an operator tell whether the cause sits in the application path, the agent trajectory, or the evidence the agent returned?
 
@@ -42,7 +42,7 @@ The final two rows matter. The agent completed its permitted loop, and the appli
 
 ## Trace-readiness finding
 
-The canonical workflow above was complete on its first dashboard read. An earlier workflow exposed a different state: the first exact lookup returned 13 of 17 expected spans, and a later lookup returned all 17. This is one observed workflow, not a universal ingestion guarantee. It showed why the dashboard needs an explicit completeness state instead of treating accepted trace data as immediately final.
+The canonical workflow above was complete on its first dashboard read. An earlier workflow exposed a different state: the first exact lookup returned 13 of 17 expected spans, and a later lookup returned all 17. This is one observed workflow, not a universal ingestion guarantee. It showed why the dashboard needs an explicit completeness state: accepted trace data may still be incomplete during indexing.
 
 ## Evidence boundary
 
@@ -69,10 +69,21 @@ OpenTelemetry supplies request and span structure. OpenInference adds agent, mod
 
 ## What to inspect
 
-1. **Overview and application metrics:** compare the `review_required` customer outcome with zero trace errors, then inspect time, token, request, and serving-colo evidence.
-2. **End-to-end traces:** follow the separate OCR and recommendation waterfalls and verify the human-review handoff is not presented as one long server span.
-3. **Execution graph:** inspect the parent-child path from recommendation request to agent, model, SQL tools, validation, and response.
-4. **Application logs:** follow the two request boundaries and 22 model or tool completion events under the same workflow identifier.
+1. **Overview and application metrics:** inspect request completion, server time, errors, application events, and serving colo before interpreting the AI work.
+
+   ![Run evidence overview showing the customer outcome, complete traces, request timing, token volume, and Cloudflare ATL serving edge](../assets/screenshots/20-dashboard-run-overview.jpg)
+
+2. **Application logs:** follow the two request boundaries and 22 model or tool completion events under the same workflow identifier.
+
+   ![Chronological Cloudflare D1 application events correlated to the selected workflow and trace IDs](../assets/screenshots/23-dashboard-application-logs.jpg)
+
+3. **End-to-end trace:** use Arize spans to follow the separate OCR and recommendation requests and verify the human-review handoff is not presented as one long server span.
+
+   ![Segmented Arize waterfall for the OCR and recommendation requests](../assets/screenshots/21-dashboard-end-to-end-traces.jpg)
+
+4. **Execution graph:** inspect the parent-child path from recommendation request to agent, model, SQL tools, validation, and response.
+
+   ![Trace-generated OCR and recommendation execution graphs joined through the workflow handoff](../assets/screenshots/22-dashboard-execution-graph.jpg)
 
 The dashboard makes a boundary visible that Arize AX and an application monitoring system normally present in separate views. It is an exploration of the operator experience, not a claim that Arize should become a general log store.
 

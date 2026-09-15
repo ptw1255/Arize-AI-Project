@@ -32,6 +32,18 @@ The preflight would:
 
 The opportunity sits on the critical path from production evidence to a trustworthy improvement decision. An incorrect mapping can return a confident evaluation score for the wrong question. Builders configuring tasks, operators investigating incomplete runs, and product owners deciding whether to ship a change all depend on this handoff.
 
+## Prioritization across the observed opportunities
+
+I separated changes to this grocery agent from horizontal investments in Arize AX. I also separated workflow defects that should be corrected from product bets that require validation.
+
+| Opportunity | Evidence from this project | Product scope | Decision |
+| --- | --- | --- | --- |
+| Evaluation Readiness Preflight | Mapping ambiguity, incompatible evaluator scopes, context failure, missing labels, and blank operational comparisons delayed the first trustworthy experiment. | Horizontal developer-adoption path across datasets, evaluators, and experiments. | Build first. It is directly supported by the dogfooding evidence and extends an existing workflow. |
+| Agent service indicators, objectives, and escalation | `OK` spans coexisted with a failed customer outcome; semantic and deterministic evaluations disagreed; operational measures were difficult to carry into the release decision. | Production operating contract for agents shared across teams or promoted into customer-facing environments. | Validate next. The potential reach is high, but this project alone does not establish the correct defaults or buyer requirements. |
+| Trace readiness and cross-request correlation | One exact trace read was temporarily incomplete; hard timeouts could remain only in application logs; OCR and recommendation cross a human-review boundary. | Instrumentation and incident-investigation foundation. | Treat as enabling platform work and a standards hypothesis, not a competing first MVP. |
+| Failed-only evaluator retry and explicit denominators | Provider throttling left 37/44 and 36/44 labels, while override retry repeated successful judge calls. | Evaluation execution quality. | Correct within the evaluation workflow. Do not inflate it into the primary product proposal. |
+| Retailer identity and candidate-relevance controls | Prompt C produced valid SQL without usable evidence and retained lexical collisions. | Grocery-agent tool and evidence contract. | Improve in the application and test again. This is not a horizontal Arize feature. |
+
 ## MVP
 
 The MVP is a read-only preview and validation step for one trace-derived dataset version and one evaluator set. It does not need to redesign datasets, evaluators, or experiments. It needs to show:
@@ -78,6 +90,31 @@ For the pilot, a trusted score means that the developer confirmed the mappings, 
 - percentage of invalid evaluator mappings caught before judge calls begin;
 - developer confirmation that the comparison answers the intended product question.
 
+## Next hypothesis: agent service objectives
+
+Arize already provides [custom metrics](https://arize.com/docs/ax/observe/projects/custom-metrics-api), [dashboards](https://arize.com/docs/ax/observe/dashboards), [continuous evaluations](https://arize.com/docs/ax/evaluate/online-evals/setting-up-online-evals), monitors, and [alert integrations](https://arize.com/docs/ax/machine-learning/machine-learning/how-to-ml/monitors/configure-monitors/notifications-and-integrations). The next opportunity is not another threshold screen. It is a versioned operating contract that lets a team define what acceptable agent service means and apply the same definition during experiments and in production.
+
+An agent service objective would contain:
+
+- an indicator and its source evidence;
+- a target, measurement window, and environment or cohort;
+- prompt, policy, model, contract, dataset, and release versions;
+- an owner and escalation policy;
+- the action permitted when the objective is missed.
+
+The first indicator families should cover:
+
+| Indicator family | Example indicators |
+| --- | --- |
+| Customer outcome | Supported task-completion rate, critical relevance, correct abstention, and human-review rate |
+| Reliability | Invocation success, trace completeness, tool success, timeout rate, and budget-exhaustion rate |
+| Efficiency | End-to-end p95 latency, tokens and cost per completed task, tool calls per task, and no-progress loop rate |
+| Governance | Policy pass rate, guardrail violations, unauthorized tool attempts, and unresolved human-review state |
+
+The escalation policy should distinguish a warning from an incident. A warning can create an investigation cohort and regression dataset. A sustained reliability breach can notify an operator. A quality or governance breach can route work to human review or send a versioned control signal to the application. Arize can define, measure, explain, and communicate the decision; the customer's runtime should retain enforcement authority.
+
+This is a discovery item after the Preflight MVP. Before committing to it, I would validate indicator definitions, ownership, measurement windows, error-budget expectations, and escalation integrations with AI engineers, SREs, and product owners operating shared production agents.
+
 ## Evidence from Part 2
 
 Prompt B and Prompt C ran against the same four cases, catalog versions, runtime, contract, model configuration, and evaluator versions. Prompt C improved native task completion from 75% to 100%, but critical product relevance fell from three of four cases to zero, total elapsed time increased 93.9%, tool calls increased 45.8%, and completion tokens increased 132.5%.
@@ -97,5 +134,6 @@ These are follow-on questions, not additions to the MVP:
 - **Release facets:** make prompt, model, policy, data, contract, application, and environment versions available as shared filters across traces and experiments.
 - **Evaluation disagreement:** surface semantic-judge results beside deterministic execution invariants and keep the expected, completed, failed, and missing score denominator visible.
 - **Pre-model invocation state:** standardize blocked, failed-to-invoke, timed-out, and disabled outcomes so an application failure remains part of the AI investigation even when no model span exists.
+- **Agent service objectives:** carry versioned outcome, reliability, efficiency, and governance thresholds from offline release gates into production monitors and escalation workflows.
 
 The first three improve incident and regression evidence. The last two improve release confidence. None requires Arize to become the runtime that executes or enforces agent actions.
