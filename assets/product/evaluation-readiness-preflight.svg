@@ -73,7 +73,7 @@
 
   <rect class="status-warning" x="492" y="744" width="364" height="122" rx="16"/>
   <text class="state" x="518" y="784">WARNING</text>
-  <text class="body" x="518" y="818">Developer reviews a non-blocking gap;</text>
+  <text class="body" x="518" y="818">Developer reviews a non-blocking warning;</text>
   <text class="body" x="518" y="844">the warning remains in the run record.</text>
 
   <rect class="status-blocked" x="912" y="744" width="456" height="122" rx="16"/>

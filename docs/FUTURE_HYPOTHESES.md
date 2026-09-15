@@ -6,7 +6,7 @@ The Prompt B/C comparison answered one question: forcing complete search did not
 
 **Opportunity to improve:** Prompt C returned title-cased retailer values. SQL succeeded, but the evidence resolver could not connect the rows to the canonical retailer identity.
 
-**Hypothesis:** If the tool gateway assigns retailer identity from the source table, valid catalog rows will remain usable and search-quality gaps will remain visible.
+**Hypothesis:** If the tool gateway assigns retailer identity from the source table, valid catalog rows will remain usable while the remaining search-quality opportunities stay visible.
 
 **Measure:** evidence-resolution mismatches, critical relevance, completed coverage, and contract pass rate.
 

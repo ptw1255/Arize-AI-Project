@@ -9,7 +9,7 @@ This document preserves the plan written before the controlled Prompt B/C runs. 
 - **Controlled execution date:** 2026-09-10
 - **Baseline lineage:** Prompt B / `search-policy-v1`
 - **Final candidate lineage:** Prompt C / `search-policy-v2.2` after bounded preflight revisions
-- **Verified outcomes and decision:** [Part 2 — Evaluate, improve, and decide](PART_2_EVALUATE_IMPROVE_DECIDE.md)
+- **Verified outcomes and decision:** [Part 2: Evaluate, improve, and decide](PART_2_EVALUATE_IMPROVE_DECIDE.md)
 
 No outcomes or comparison results have been inserted into the preregistered sections below.
 
@@ -127,6 +127,6 @@ Choose exactly one outcome after the experiment:
 
 - **Ship:** quality improves across the critical cases, unsupported states are removed, and operational regressions remain inside the accepted envelope.
 - **Revise:** the hypothesis is partially supported, but a quality or operational guardrail still fails.
-- **Reject:** the candidate does not improve the target behavior or creates a worse customer or operational outcome.
+- **Hold:** the candidate does not improve the target behavior or creates a less useful customer or operational outcome.
 
 No outcome will be entered into the preregistered plan until it is verified in Arize or a trusted export; verified results remain in the linked Part 2 decision record.

@@ -16,7 +16,7 @@ The caller supplies three runtime dependencies: an LLM client, a read-only SQL e
 ## Read path
 
 1. [`src/contract.ts`](src/contract.ts) is the current `0.2.1` execution envelope. It preserves `0.2.0` as the contract used by the completed B/C experiment.
-2. [`src/prompts.ts`](src/prompts.ts) contains the deployed Prompt B baseline and rejected Prompt C candidate.
+2. [`src/prompts.ts`](src/prompts.ts) contains the deployed Prompt B baseline and the Prompt C candidate that was not promoted.
 3. [`src/reference-agent.ts`](src/reference-agent.ts) shows the model/tool loop and records a trace summary.
 4. [`src/sql-policy.ts`](src/sql-policy.ts) blocks mutating, multi-statement, commented, and system-table SQL, then bounds returned rows. It intentionally does not validate table or column names; those search failures are observable behavior.
 5. [`src/validation.ts`](src/validation.ts) applies the final customer-state rule: an item is `unavailable` only after both retailer searches complete. In `0.2.1`, it compares raw snapshot prices only for equivalent, unambiguous packages in the same currency and returns a machine-readable comparison state such as `currency_mismatch` or `different_package_sizes`.

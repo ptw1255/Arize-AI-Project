@@ -1,4 +1,4 @@
-# Agent definition — Grocery comparison agent
+# Agent definition: Grocery comparison agent
 
 ## Identity
 
@@ -116,11 +116,11 @@ Both experiment variants used contract `0.2.0`; only the prompt and search-polic
 
 Prompt C v2.2 added coverage tracking, concept normalization, category checks, and bounded reformulation. It completed 17 of 17 item searches, compared with Prompt B's 10 of 17. Critical relevance fell from three of four cases to zero of four, elapsed time increased 93.9%, tool calls increased 45.8%, and completion tokens increased 132.5%.
 
-Prompt C was rejected. Prompt B remains the deployed demo baseline.
+Prompt C was not promoted. Prompt B remains the deployed demo baseline.
 
-## Known boundary
+## Production opportunities
 
-The current agent is designed for observation in a limited demonstration. A production version would require stronger query parsing and catalog isolation, live authorized data connectors, complete failure-safe trace export, agreed quality and operating thresholds, and a tested rollback process.
+The current agent is designed for observation in a limited demonstration. Moving toward production would create opportunities to strengthen query parsing and catalog isolation, add live authorized data connectors, make trace export resilient to failures, agree on quality and operating thresholds, and test a rollback process.
 
 ## Executable reference
 

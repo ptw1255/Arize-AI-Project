@@ -1,10 +1,10 @@
-# Part 2 — Evaluate, improve, and decide
+# Part 2: Evaluate, improve, and decide
 
 ## Decision
 
-I rejected Prompt C v2.2 and kept Prompt B as the deployed demo baseline.
+I chose not to promote Prompt C v2.2 and kept Prompt B as the deployed demo baseline.
 
-Prompt C completed every requested retailer search. It also returned worse product evidence, took almost twice as long, issued more tool calls, and generated more than twice the completion tokens. Full coverage did not produce a better customer result.
+Prompt C completed every requested retailer search, but the broader search policy reduced product relevance. It also increased elapsed time by 93.9%, tool calls by 45.8%, and completion tokens by 132.5%. Full coverage alone did not improve the customer result.
 
 ## What I tested
 
@@ -52,7 +52,7 @@ The first candidate changed the reviewed item ID `black_beans` into retailer-spe
 
 I kept the runtime contract fixed and changed the prompt. The next candidate used the correct item ID, then replaced the stored retailer field with title-cased text. SQL returned rows, but the evidence resolver could not validate their retailer identity.
 
-I changed the prompt again and recorded the final candidate as `search-policy-v2.2`. The fixed server contract exposed model mistakes and did not silently repair them.
+I changed the prompt again and recorded the final candidate as `search-policy-v2.2`. The fixed server contract kept the model behavior visible and avoided repairing it behind the scenes.
 
 ## What Arize showed
 
@@ -64,7 +64,7 @@ Native step efficiency moved in the opposite direction, from 100% to 66.7%.
 
 ![Agent step efficiency declined by 33.3 points](../assets/screenshots/12-experiment-analysis.jpg)
 
-Those two charts were enough to reject a one-metric decision. I exported the runs, attached deterministic annotations, and inspected the source outputs and traces.
+Those two charts showed why one metric could not support the release decision. I exported the runs, attached deterministic annotations, and inspected the source outputs and traces.
 
 The scrubbed [run-level evidence artifact](../evidence/experiment-runs.json) contains all four rows for each variant. It preserves the fields needed to verify the decision without including prompts, credentials, raw payloads, or unnecessary Arize identifiers. Its reconciliation block independently derives the reported aggregate table and reports no mismatches.
 
@@ -85,7 +85,7 @@ The scrubbed [run-level evidence artifact](../evidence/experiment-runs.json) con
 
 Prompt C met its coverage goal. It searched all 17 requested items and reduced the number of model rounds.
 
-The customer result was worse:
+The customer result became less useful:
 
 - The recipe still matched chicken packed in water to water, celery salt to celery, and pot roast containing carrots to carrots.
 - Corn tortillas, black beans, and salsa verde were marked unavailable because the candidate did not return usable retailer evidence.
@@ -98,11 +98,11 @@ Accepted SQL and zero runtime errors did not prove that the evidence was usable.
 
 ![Prompt B evaluator evidence](../assets/screenshots/15-prompt-b-baseline-results.jpg)
 
-The Prompt B capture identifies the four grocery inputs and the `grocery-prompt-b-baseline` experiment. Three rows pass deterministic critical relevance; the 14-item recipe fails. The same rows show their native relevance and task-completion labels. The image proves those visible run-level labels; it does not, by itself, establish the full aggregate or prove every baseline output is correct.
+The Prompt B capture identifies the four grocery inputs and the `grocery-prompt-b-baseline` experiment. Three rows pass deterministic critical relevance; the 14-item recipe does not. The same rows show their native relevance and task-completion labels. The image documents those visible run-level labels. The full aggregate is verified separately through the exported evidence.
 
 ![Prompt C evaluator evidence](../assets/screenshots/16-prompt-c-candidate-results.jpg)
 
-The Prompt C capture shows the same four grocery inputs under `grocery-prompt-c-candidate`. Every deterministic critical-relevance check fails, while native relevance remains `relevant`; three visible task-completion labels say `completed`. The image proves that run-level disagreement in Arize. It does not, by itself, establish the full aggregate or imply that semantic labels override deterministic failures.
+The Prompt C capture shows the same four grocery inputs under `grocery-prompt-c-candidate`. None meets the deterministic critical-relevance check, while native relevance remains `relevant`; three visible task-completion labels say `completed`. The image documents the run-level disagreement in Arize. The full aggregate and release decision also use the exported evidence.
 
 Arize-native evaluators measured semantic concerns such as relevance, task completion, grounding, SQL generation, tool use, and step efficiency.
 
@@ -114,7 +114,7 @@ Deterministic checks measured facts already present in the run:
 - critical cases avoided known category collisions;
 - latency, tokens, calls, retries, errors, and unresolved items stayed visible.
 
-Several model judges called Prompt C's single-item outputs relevant, factual, correct, or complete. The deterministic relevance check rejected those runs because expected products existed and the agent returned no usable evidence.
+Several model judges called Prompt C's single-item outputs relevant, factual, correct, or complete. The deterministic relevance check reached a different conclusion because expected products existed and the agent returned no usable evidence.
 
 The disagreement was part of the result. A fluent abstention can pass a semantic judge while hiding a tool-contract mismatch.
 
@@ -133,7 +133,7 @@ Most missing labels came from provider throttling. The 14-item recipe exceeded o
 
 I kept missing labels explicit. They were not counted as passes.
 
-## Arize opportunities to improve
+## Where I would improve the Arize workflow
 
 The experiment comparison offered average latency, total tokens, and error-count columns. Those columns were blank even though the values existed in the experiment output and source traces.
 
@@ -153,9 +153,9 @@ The work identified four connected opportunities:
 | Gate | Prompt C result |
 | --- | --- |
 | Complete more searches | Pass |
-| Improve relevant product evidence | Fail |
+| Improve relevant product evidence | Not met |
 | Preserve the response contract | Pass |
-| Stay inside the operating envelope | Fail |
+| Stay inside the operating envelope | Not met |
 | Produce enough evidence for a decision | Pass, with missing-label caveat |
 
 Prompt C increased coverage and reduced customer outcome quality. I did not promote it.
@@ -177,4 +177,4 @@ The preflight would show:
 - operational measures available for comparison;
 - expected evaluator count and missing-score state.
 
-This addresses the setup and evidence gaps I encountered before the first trustworthy comparison. It also builds on workflows that already exist in Arize.
+This addresses the setup and evidence opportunities I found before the first trustworthy comparison. It also builds on workflows that already exist in Arize.

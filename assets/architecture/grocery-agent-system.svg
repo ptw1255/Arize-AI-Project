@@ -35,7 +35,7 @@
   <path d="M1190 255 H1110 V675" class="edge"/><text x="1117" y="242" class="tag">validated result</text>
 
   <rect x="60" y="425" width="1110" height="340" rx="18" class="worker"/>
-  <text x="88" y="460" class="head">Cloudflare Worker — comparison request</text>
+  <text x="88" y="460" class="head">Cloudflare Worker: comparison request</text>
   <rect x="95" y="505" width="195" height="150" rx="13" class="box"/>
   <text x="119" y="544" class="head">Agent loop</text><text x="119" y="570" class="body">Model decides search,</text><text x="119" y="592" class="body">retry, and stop behavior</text><text x="119" y="620" class="small">bounded rounds and calls</text>
   <rect x="350" y="505" width="190" height="150" rx="13" class="box"/>

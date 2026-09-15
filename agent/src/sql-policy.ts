@@ -11,7 +11,7 @@ export type SqlPolicyDecision = {
 /**
  * This is the demonstration gateway's safety policy. It is deliberately not a
  * SQL parser or a table/column allowlist. Invalid catalog SQL is allowed to
- * reach the database so the agent's search mistakes can be observed.
+ * reach the database so the agent's search decisions can be observed.
  */
 export function evaluateSqlPolicy(sql: string, maxLength = AGENT_CONTRACT.execution.maxSqlCharacters): SqlPolicyDecision {
   const trimmed = sql.trim();

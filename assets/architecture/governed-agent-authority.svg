@@ -28,7 +28,7 @@
   <text x="110" y="530" class="subhead">Recommend within the response contract</text><text x="110" y="556" class="body">Costco · Walmart · either · review · unavailable</text><text x="110" y="580" class="small">Uses returned snapshot evidence; never claims it is live</text>
 
   <rect x="570" y="130" width="460" height="510" rx="18" class="panel visible"/>
-  <text x="598" y="170" class="head">Allowed to fail — visibly</text>
+  <text x="598" y="170" class="head">Visible failure modes</text>
   <text x="598" y="197" class="body">Search quality is deliberately observable, not hidden.</text>
   <rect x="598" y="225" width="404" height="94" rx="12" class="box"/>
   <text x="620" y="260" class="subhead">Weak or irrelevant candidate selection</text><text x="620" y="286" class="body">Lexical overlap can produce poor evidence</text>
@@ -50,7 +50,7 @@
   <text x="1130" y="520" class="subhead">External or control-plane actions</text><text x="1130" y="546" class="body">No purchases, carts, orders, data-source writes,</text><text x="1130" y="570" class="small">prompt/policy/model-limit changes, or final-response control</text>
 
   <rect x="60" y="710" width="1480" height="240" rx="18" class="enforce"/>
-  <text x="88" y="752" class="head">Application enforcement boundary — Cloudflare Worker</text>
+  <text x="88" y="752" class="head">Application enforcement boundary: Cloudflare Worker</text>
   <rect x="95" y="785" width="250" height="125" rx="12" class="box"/>
   <text x="117" y="820" class="subhead">Policy gate</text><text x="117" y="846" class="body">SELECT / WITH only</text><text x="117" y="869" class="small">single statement · no comments</text><text x="117" y="890" class="small">no mutations or system tables</text>
   <rect x="410" y="785" width="250" height="125" rx="12" class="box"/>

@@ -2,13 +2,13 @@
 
 ## Adoption opportunity
 
-Arize already lets a developer inspect traces, add selected spans to a dataset, configure evaluators, and start experiments. The remaining opportunity is semantic readiness: a trace-derived example may contain data without containing the right, separable fields for the selected task and evaluators.
+Arize already gives developers a useful path from trace inspection to datasets, evaluators, and experiments. The next opportunity is semantic readiness: helping a developer confirm that a trace-derived example contains the right, separable fields for the task and evaluators they selected.
 
-In this project, the dataset existed, but the task input was not named `question`, imported fields were nested, reference evidence was absent, evaluator scopes differed, and operational measures did not automatically appear in the experiment comparison. Each issue was discoverable, but only after moving deeper into the workflow.
+In this project, the dataset existed, but the task input was not named `question`, imported fields were nested, reference evidence was absent, evaluator scopes differed, and operational measures did not automatically appear in the experiment comparison. I could resolve each condition, but only after moving deeper into the workflow. That delayed the moment when I could trust the comparison.
 
 ![Trace-derived dataset with four cases](../assets/screenshots/11-trace-derived-dataset.jpg)
 
-The screenshot also shows why the proposal is narrower than “trace to evaluation.” The trace-to-dataset action already works. The readiness gap appears after conversion: token and cost summaries are blank, while the row contract and evaluator mappings still require inspection.
+The screenshot also shows why the proposal is narrower than “trace to evaluation.” The trace-to-dataset action already works. The readiness opportunity appears after conversion: token and cost summaries are blank, while the row contract and evaluator mappings still require inspection.
 
 ## Proposed investment: Evaluation Readiness Preflight
 
@@ -30,23 +30,23 @@ The preflight would:
 
 ## Why this first
 
-The opportunity sits on the critical path from production evidence to a trustworthy improvement decision. An incorrect mapping can return a confident evaluation score for the wrong question. Builders configuring tasks, operators investigating incomplete runs, and product owners deciding whether to ship a change all depend on this handoff.
+This opportunity sits on the critical path from production evidence to a trustworthy improvement decision. A plausible but incorrect mapping can produce a confident score for a different question than the developer intended. Builders configuring tasks, operators investigating incomplete runs, and product owners deciding whether to ship a change all depend on this handoff.
 
 ## Prioritization across the observed opportunities
 
-I separated changes to this grocery agent from horizontal investments in Arize AX. I also separated workflow defects that should be corrected from product bets that require validation.
+I separated changes to this grocery agent from horizontal investments in Arize AX. I also separated observed workflow opportunities that can be corrected from product bets that require validation.
 
 | Opportunity | Evidence from this project | Product scope | Decision |
 | --- | --- | --- | --- |
 | Evaluation Readiness Preflight | Mapping ambiguity, incompatible evaluator scopes, context failure, missing labels, and blank operational comparisons delayed the first trustworthy experiment. | Horizontal developer-adoption path across datasets, evaluators, and experiments. | Build first. It is directly supported by the dogfooding evidence and extends an existing workflow. |
 | Agent service indicators, objectives, and escalation | `OK` spans coexisted with a failed customer outcome; semantic and deterministic evaluations disagreed; operational measures were difficult to carry into the release decision. | Production operating contract for agents shared across teams or promoted into customer-facing environments. | Validate next. The potential reach is high, but this project alone does not establish the correct defaults or buyer requirements. |
-| Trace readiness and cross-request correlation | One exact trace read was temporarily incomplete; hard timeouts could remain only in application logs; OCR and recommendation cross a human-review boundary. | Instrumentation and incident-investigation foundation. | Treat as enabling platform work and a standards hypothesis, not a competing first MVP. |
-| Failed-only evaluator retry and explicit denominators | Provider throttling left 37/44 and 36/44 labels, while override retry repeated successful judge calls. | Evaluation execution quality. | Correct within the evaluation workflow. Do not inflate it into the primary product proposal. |
+| Trace readiness and cross-request correlation | One exact trace read was temporarily incomplete; hard timeouts could remain only in application logs; OCR and recommendation cross a human-review boundary. | Instrumentation and incident-investigation foundation. | Explore as enabling platform work and a standards hypothesis after the first MVP. |
+| Failed-only evaluator retry and explicit denominators | Provider throttling left 37/44 and 36/44 labels, while override retry repeated successful judge calls. | Evaluation execution quality. | Address within the evaluation workflow while keeping Preflight as the primary proposal. |
 | Retailer identity and candidate-relevance controls | Prompt C produced valid SQL without usable evidence and retained lexical collisions. | Grocery-agent tool and evidence contract. | Improve in the application and test again. This is not a horizontal Arize feature. |
 
 ## MVP
 
-The MVP is a read-only preview and validation step for one trace-derived dataset version and one evaluator set. It does not need to redesign datasets, evaluators, or experiments. It needs to show:
+The MVP can stay focused: a read-only preview and validation step for one trace-derived dataset version and one evaluator set. It would show:
 
 - the first three example shapes and representative values;
 - the proposed task input and output mappings;
@@ -64,7 +64,7 @@ This proposal reuses Arize's current trace viewer, trace-to-dataset action, data
 2. **Validate before spend.** Return pass, warning, or blocked status for the confirmed mappings, evaluator scopes, context size, lineage fields, and available operational measures. A blocked state prevents the first scored run; warnings remain visible in the experiment record.
 3. **Hand off the confirmed setup.** Create an experiment stub that carries the approved mappings and version lineage into Prompt Playground, Agent Playground, or code. The developer still owns the task implementation, references, and launch decision.
 
-The first release depends on machine-readable evaluator variables and scope, a stable dataset-version schema with sample values, prompt and model lineage, and a reliable declaration of which operational measures are present. Ambiguous field names are the main product risk. A plausible inferred mapping can produce a valid-looking score against the wrong input, which is worse than a visible setup failure. The preflight should display the evidence behind each inference and require confirmation when more than one field could satisfy a variable.
+The first release depends on machine-readable evaluator variables and scope, a stable dataset-version schema with sample values, prompt and model lineage, and a reliable declaration of which operational measures are present. Ambiguous field names create the main product risk: a plausible inferred mapping can produce a valid-looking score against an unintended input. The preflight should show why it proposed each mapping and ask for confirmation when more than one field could satisfy a variable.
 
 The MVP excludes automatic prompt rewriting, expected-answer generation, dataset mutation, evaluator redesign, and automatic remediation. Those actions require separate evidence and user control.
 
@@ -92,7 +92,7 @@ For the pilot, a trusted score means that the developer confirmed the mappings, 
 
 ## Future discovery: agent service objectives
 
-Arize already provides [custom metrics](https://arize.com/docs/ax/observe/projects/custom-metrics-api), [dashboards](https://arize.com/docs/ax/observe/dashboards), [continuous evaluations](https://arize.com/docs/ax/evaluate/online-evals/setting-up-online-evals), monitors, and [alert integrations](https://arize.com/docs/ax/machine-learning/machine-learning/how-to-ml/monitors/configure-monitors/notifications-and-integrations). The next opportunity is not another threshold screen. It is a versioned operating contract that lets a team define what acceptable agent service means and apply the same definition during experiments and in production.
+Arize already provides [custom metrics](https://arize.com/docs/ax/observe/projects/custom-metrics-api), [dashboards](https://arize.com/docs/ax/observe/dashboards), [continuous evaluations](https://arize.com/docs/ax/evaluate/online-evals/setting-up-online-evals), monitors, and [alert integrations](https://arize.com/docs/ax/machine-learning/machine-learning/how-to-ml/monitors/configure-monitors/notifications-and-integrations). A further opportunity is a versioned operating contract that helps a team define acceptable agent service once, then use that definition during experiments and in production.
 
 An agent service objective would contain:
 
@@ -113,7 +113,7 @@ The first indicator families should cover:
 
 The escalation policy should distinguish a warning from an incident. A warning can create an investigation cohort and regression dataset. A sustained reliability breach can notify an operator. A quality or governance breach can route work to human review or send a versioned control signal to the application. Arize can define, measure, explain, and communicate the decision; the customer's runtime should retain enforcement authority.
 
-This is a discovery item after the Preflight MVP. Before committing to it, I would validate indicator definitions, ownership, measurement windows, error-budget expectations, and escalation integrations with AI engineers, SREs, and product owners operating shared production agents.
+This is a discovery item after the Preflight MVP. Before making a roadmap commitment, I would validate indicator definitions, ownership, measurement windows, error-budget expectations, and escalation integrations with AI engineers, SREs, and product owners operating shared production agents.
 
 ### Product use case: govern a shared production agent
 
@@ -150,7 +150,7 @@ These observations make the preflight the recommended adoption investment. It ac
 
 ## Other future discovery
 
-These are follow-on questions, not additions to the MVP:
+These are follow-on opportunities outside the first MVP:
 
 - **Cross-request workflow correlation:** preserve one workflow and session identity across separate request traces, including asynchronous human review.
 - **Trace-readiness state:** expose whether root-declared spans and parent links are complete before a trace becomes an evaluation source.

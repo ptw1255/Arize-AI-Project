@@ -1,4 +1,4 @@
-# Project brief — Grocery comparison agent
+# Project brief: Grocery comparison agent
 
 ## Product
 
@@ -21,7 +21,7 @@ A Costco member does not want every item in bulk. A price-sensitive shopper cann
 - review this match;
 - leave this item unresolved when the evidence is incomplete.
 
-The product must explain each decision with the evidence the agent actually found.
+The product should explain each decision with the evidence the agent actually found.
 
 ## Why I chose this use case
 
@@ -50,9 +50,9 @@ The agent receives a reviewed grocery list and shopper preferences. It can inspe
 
 I kept query formation inside the agent boundary. A fixed search function would have hidden search quality in application code. Model-authored SQL made query choice, schema interpretation, candidate selection, retries, and stopping behavior visible in the trace.
 
-The agent was intentionally allowed to be imperfect. It could write ineffective SQL, choose irrelevant rows, repeat a rejected tool call, or stop before it completed the list. Those behaviors created evidence for the observability and evaluation workflows.
+The agent was intentionally allowed to be imperfect. It could write ineffective SQL, choose less relevant rows, repeat a tool call that the server declined, or stop before it completed the list. Those behaviors created evidence for the observability and evaluation workflows.
 
-The application controls the consequence of those mistakes. The model cannot mutate the catalogs, change its limits, or create the final response from unverified evidence.
+The application controls the consequences of those behaviors. It protects the catalogs, owns the operating limits, and builds the final response from validated evidence.
 
 [Read the agent definition](AGENT_DEFINITION.md)
 
@@ -81,13 +81,13 @@ The [verified evidence dashboard](OBSERVABILITY_DASHBOARD.md) makes this boundar
 
 | Persona | Job to be done | Consequence of a weak evidence handoff |
 | --- | --- | --- |
-| AI engineer | Determine whether the prompt, tool, catalog data, or evidence contract caused the outcome, then create a reproducible test. | A plausible model answer can hide a retrieval or contract failure, and the next change targets the wrong layer. |
+| AI engineer | Determine whether the prompt, tool, catalog data, or evidence contract caused the outcome, then create a reproducible test. | A plausible model answer can hide a retrieval or contract issue, and the next change may target a less effective layer. |
 | Product manager | Decide whether a candidate improves customer quality within the accepted latency, cost, reliability, and governance envelope. | A quality aggregate or green runtime state can support a release even when key evaluations are missing or customer evidence regressed. |
 | SRE | Move from a slow, failed, or incomplete customer request to the exact application request and agent trajectory. | The operator must correlate timestamps across platforms and may miss pre-model failures, partial traces, or the actual dominant latency layer. |
 
 These consequences support the same product proposal; they are not three separate roadmap requests. Evaluation Readiness Preflight is the first investment because the AI engineer's trace-to-experiment handoff supplies the evidence the product manager and SRE later depend on.
 
-The baseline trace changed the runtime contract: an item cannot be labeled `unavailable` until the required retailer searches are complete. The subsequent Prompt B/C experiment did not yield a better prompt. It prevented Prompt C from shipping after the candidate increased coverage but reduced critical relevance and increased time, tool calls, and completion tokens. That result shifted the next test from adding prompt instructions to strengthening the tool and evidence interface.
+The baseline trace changed the runtime contract: an item cannot be labeled `unavailable` until the required retailer searches are complete. The subsequent Prompt B/C experiment did not yield a better prompt. It gave me the evidence to keep Prompt C out of the deployed experience after coverage improved while critical relevance declined and time, tool calls, and completion tokens increased. That result shifted the next test from adding prompt instructions to strengthening the tool and evidence interface.
 
 ## Part 1 result
 
@@ -100,7 +100,7 @@ The baseline trace completed 25 spans with `OK` status. The customer result was 
 - Carrots matched a prepared meal containing carrots.
 - Seven unsearched items were described as unavailable.
 
-Part 1 converted those outcome gaps into four regression cases and a controlled hypothesis.
+Part 1 converted those observed outcomes into four regression cases and a controlled hypothesis.
 
 The diagnostic trace used contract `0.1.0`. Contract `0.2.0` then required completed searches of both retailers before an item could be called unavailable. I applied `0.2.0` to both experiment variants, so the correction was a shared control.
 
@@ -118,7 +118,7 @@ I compared Prompt B with a coverage-first Prompt C on the same four cases under 
 | Tool calls | 24 | 35 |
 | Completion tokens | 4,033 | 9,376 |
 
-Prompt C completed more work and produced worse evidence at a higher operating cost. I rejected it and kept Prompt B as the deployed demo baseline.
+Prompt C completed more work and produced less relevant evidence at a higher operating cost. I chose not to promote it and kept Prompt B as the deployed demo baseline.
 
 [Read Part 2](PART_2_EVALUATE_IMPROVE_DECIDE.md) or [inspect the scrubbed run evidence](../evidence/experiment-runs.json).
 
@@ -149,7 +149,7 @@ It would confirm:
 
 The proposal comes from setup steps and experiment results that produced incomplete or ambiguous evidence. It extends Arize's existing trace, dataset, evaluator, and experiment workflows.
 
-I would deliver it in three product increments: expose dataset rows beside evaluator requirements, validate confirmed mappings and scope before judge calls, then carry the approved setup into an experiment stub. Candidate mappings would remain visibly inferred until the developer confirms them. That distinction matters because a plausible field match can produce a confident score for the wrong question.
+I would deliver it in three product increments: expose dataset rows beside evaluator requirements, validate confirmed mappings and scope before judge calls, then carry the approved setup into an experiment stub. Candidate mappings would remain visibly inferred until the developer confirms them. That distinction matters because a plausible field match can produce a confident score for a different question than the developer intended.
 
 The first pilot would cover trace-derived datasets in one Arize space, one dataset version, and one evaluator set per preflight. It would reuse the current trace-to-dataset, evaluator, experiment, and lineage components. It would require machine-readable evaluator inputs and scope, stable dataset-version schemas with sample values, and visibility into available operational measures.
 

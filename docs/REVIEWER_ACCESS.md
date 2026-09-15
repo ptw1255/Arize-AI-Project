@@ -1,8 +1,8 @@
 # Reviewer access
 
-The hosted demo uses Basic Authentication. Reviewer credentials are supplied separately in the submission email; they are not stored in this repository.
+The repository is public. The hosted demo uses Basic Authentication, and the originating Arize workspace remains private. Reviewer credentials for the demo are supplied separately in the submission email and are not stored in this repository.
 
-This private repository and its supporting demo are provided only to the Arize review team for this take-home assessment. No license is granted for reuse or redistribution. Please do not forward the repository URL, credentials, screenshots, or exported evidence.
+The repository contains scrubbed case-study evidence that can be reviewed without account access. The demo is provided to the Arize review team for this take-home assessment. No license is granted for reuse or redistribution. Please do not forward the demo credentials.
 
 ## Access path
 

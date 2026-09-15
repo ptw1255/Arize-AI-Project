@@ -9,28 +9,28 @@
 | What did Arize reveal? | A run can complete without runtime errors and still return incomplete or irrelevant customer evidence. |
 | What did I test? | Prompt B against a coverage-first Prompt C on four trace-derived cases under the same model, catalogs, runtime, contract, and evaluators. |
 | What did I decide? | Retain Prompt B. Prompt C searched more items and reduced relevance while increasing time, tool calls, and completion tokens. |
-| What should Arize build? | Evaluation Readiness Preflight: validate dataset fields, evaluator scope, context size, lineage, operational measures, and expected score coverage before the first scored experiment. |
+| Where is the product opportunity? | Evaluation Readiness Preflight: help developers validate dataset fields, evaluator scope, context size, lineage, operational measures, and expected score coverage before the first scored experiment. |
 
-This repository is private and provided only for Arize's take-home review. No license is granted for reuse or redistribution.
+This repository is public so the Arize review team can inspect the case study without a GitHub invitation. The hosted demo and originating Arize workspace remain access-controlled. No license is granted for reuse or redistribution.
 
 ## Decision record
 
-| Evidence | Interpretation | Decision |
+| What the evidence showed | What it means | Product decision |
 | --- | --- | --- |
 | Completed searches increased from 10/17 to 17/17. | Prompt C achieved its coverage target. | Count as an improvement. |
-| Critical product relevance fell from 3/4 to 0/4. | Additional searches did not produce usable customer evidence. | Fail the quality gate. |
-| Total elapsed time increased 93.9%. | The candidate increased customer wait. | Fail the operating-envelope gate. |
-| Tool calls increased 45.8%; completion tokens increased 132.5%. | The candidate consumed more work per test set. | Fail the efficiency gate. |
-| Native and deterministic evaluators disagreed; B produced 37/44 labels and C produced 36/44. | One aggregate could support the wrong release decision, and evaluator coverage was incomplete. | Inspect run evidence and retain missing labels. |
-| Prompt C failed the quality and operating gates. | Coverage alone did not improve the customer result. | Keep Prompt B deployed. |
+| Critical product relevance fell from 3/4 to 0/4. | Additional searches did not produce usable customer evidence. | Prompt C did not meet the quality threshold. |
+| Total elapsed time increased 93.9%. | The candidate increased customer wait. | Prompt C did not meet the operating threshold. |
+| Tool calls increased 45.8%; completion tokens increased 132.5%. | The candidate required more work per test set. | Prompt C did not meet the efficiency threshold. |
+| Native and deterministic evaluators disagreed; B produced 37/44 labels and C produced 36/44. | One aggregate could lead to a different release decision, and evaluator coverage was incomplete. | Review the run evidence and keep missing labels visible. |
+| Prompt C did not meet the quality and operating thresholds. | Coverage alone did not improve the customer result. | Keep Prompt B deployed and revise the next hypothesis. |
 
 ## Reviewer path: the assignment in three parts
 
 | Part | Reviewer question | Primary artifact |
 | --- | --- | --- |
-| 1. Build and observe | What did I build, why is it an agent, and what did the trace reveal? | [Part 1 — Build, observe, and diagnose](docs/PART_1_BUILD_OBSERVE_DIAGNOSE.md) |
-| 2. Evaluate and decide | What changed, how did I measure it, and should it ship? | [Part 2 — Evaluate, improve, and decide](docs/PART_2_EVALUATE_IMPROVE_DECIDE.md) |
-| 3. Propose an investment | Which observed adoption gap should Arize address, why first, and what is the MVP? | [Product point of view](docs/PRODUCT_POINT_OF_VIEW.md) |
+| 1. Build and observe | What did I build, why is it an agent, and what did the trace reveal? | [Part 1: Build, observe, and diagnose](docs/PART_1_BUILD_OBSERVE_DIAGNOSE.md) |
+| 2. Evaluate and decide | What changed, how did I measure it, and should it ship? | [Part 2: Evaluate, improve, and decide](docs/PART_2_EVALUATE_IMPROVE_DECIDE.md) |
+| 3. Propose an investment | Which observed adoption opportunity should Arize address, why first, and what is the MVP? | [Product point of view](docs/PRODUCT_POINT_OF_VIEW.md) |
 
 Supporting evidence: [project brief](docs/PROJECT_BRIEF.md), [application observability dashboard](docs/OBSERVABILITY_DASHBOARD.md), [agent definition](docs/AGENT_DEFINITION.md), [evidence index](docs/EVIDENCE_INDEX.md), [AI tool-use disclosure](docs/AI_TOOL_USE.md), and [assignment mapping](docs/ASSIGNMENT_MAPPING.md).
 
@@ -58,11 +58,11 @@ flowchart LR
     H --> X[Arize evidence<br/>agent · LLM · tool · validation]
     X --> E[Evaluation<br/>semantic + deterministic]
     E --> P[Prompt B/C experiment]
-    P --> D[Release decision<br/>retain B · reject C]
+    P --> D[Release decision<br/>retain B · hold C]
     D --> N[Next test<br/>tool and evidence contract]
 ```
 
-The baseline trace produced one implemented correction: an item cannot be labeled `unavailable` until the agent completes the required retailer searches. The Prompt B/C experiment did not produce a better candidate prompt. It showed that Prompt C increased coverage while reducing relevant evidence and increasing time, tool calls, and completion tokens. Arize helped prevent that regression from shipping and directed the next test toward the tool and evidence interface.
+The baseline trace produced one implemented correction: an item cannot be labeled `unavailable` until the agent completes the required retailer searches. The Prompt B/C experiment did not produce a better candidate prompt. It showed that Prompt C increased coverage while reducing relevant evidence and increasing time, tool calls, and completion tokens. Arize gave me enough evidence to keep that regression out of the deployed experience and focus the next test on the tool and evidence interface.
 
 ## Product
 
@@ -87,7 +87,7 @@ One 14-item run completed 25 spans with `OK` status. The customer result was inc
 - Carrots matched a prepared meal containing carrots.
 - Seven unsearched items were described as unavailable.
 
-The trace showed the difference between execution success and customer success. A completed query can return the wrong evidence. A completed trace can end with an incomplete task.
+The trace showed the difference between execution success and customer success. A completed query can return unrelated evidence. A completed trace can end with an incomplete task.
 
 [Inspect the baseline trace evidence and diagnosis](docs/PART_1_BUILD_OBSERVE_DIAGNOSE.md).
 
@@ -103,7 +103,7 @@ I added four observed runs to the `grocery-agent-regression-cases` dataset and c
 | Tool calls | 24 | 35 |
 | Completion tokens | 4,033 | 9,376 |
 
-Prompt C met the coverage target and reduced customer outcome quality. I kept Prompt B as the deployed demo baseline.
+Prompt C met the coverage target, but the customer evidence became less relevant. I kept Prompt B as the deployed demo baseline and moved the next investigation to the tool and evidence contract.
 
 [Inspect the run-level experiment evidence](docs/PART_2_EVALUATE_IMPROVE_DECIDE.md) or [verify the scrubbed eight-run export](evidence/experiment-runs.json).
 
@@ -125,7 +125,7 @@ Arize already supports trace inspection, trace-to-dataset conversion, evaluators
 
 | Horizon | Product decision |
 | --- | --- |
-| Build first | Evaluation Readiness Preflight, because the completed dogfooding workflow directly exposed the setup and evidence gap. |
+| Build first | Evaluation Readiness Preflight, because the completed dogfooding workflow directly exposed the setup and evidence opportunity. |
 | Validate next | The SRE governance use case for teams operating shared production agents. A versioned service contract would connect customer outcome, reliability, efficiency, and governance thresholds across experiments and live monitoring. |
 | Preserve the boundary | Arize should define, measure, explain, and communicate an objective breach. The customer application should retain authority to stop, reroute, degrade, or require human review. |
 

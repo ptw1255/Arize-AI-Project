@@ -1,4 +1,4 @@
-# Part 1 — Build, observe, and diagnose
+# Part 1: Build, observe, and diagnose
 
 ## What I built
 
@@ -20,7 +20,7 @@ OCR prepares the input. The agent starts after the customer approves the list.
 
 For every item, the agent decides how to search two different catalog tables. It inspects the available schema, writes read-only SQL, reviews the returned candidates, reformulates weak searches when useful, and decides when it has enough evidence to stop. The application then validates the collected evidence and builds the customer response.
 
-I intentionally kept query formation inside the agent. This gave the model enough freedom to make visible search decisions and visible mistakes. A fixed search tool would have reduced implementation risk, but it would also have hidden query quality, retries, and no-progress behavior inside application code. Model-authored SQL made those behaviors available to traces, evaluations, and prompt experiments.
+I intentionally kept query formation inside the agent. This gave the model room to make real search decisions, including decisions I could study and improve. A fixed search tool would have reduced implementation risk while moving query quality, retries, and no-progress behavior into application code. Model-authored SQL kept those behaviors available to traces, evaluations, and prompt experiments.
 
 That separation gave me two quality domains:
 
@@ -44,7 +44,7 @@ The customer-facing contract is one result per requested item. Each result inclu
 
 ![Historical diagnostic baseline result](../assets/screenshots/03-agent-recommendation.png)
 
-The image above is historical diagnostic evidence captured before the shared 0.2.0 state-invariant correction. It preserves the original failure under investigation and should not be read as the current deployed demo result. The current deployed demo result is shown below using the built-in demo list; it is hosted-demo evidence, not OCR evidence.
+The image above is historical diagnostic evidence captured before the shared 0.2.0 state-invariant correction. It preserves the original behavior that prompted the investigation. The current deployed demo result appears below using the built-in demo list; it is hosted-demo evidence, not OCR evidence.
 
 ![Current deployed demo result](../assets/screenshots/19-current-deployed-demo-result.jpg)
 
@@ -58,7 +58,7 @@ I wanted the model to make observable decisions. I allowed it to inspect the cat
 
 The application enforces read-only, single-statement SQL, blocks administrative operations and system-table access, limits returned rows, caps model and tool work, and validates the final response. It also pins the hosted demo to the server-selected deployed demo baseline. Prompt overrides are available only through the controlled experiment path.
 
-The model can still write ineffective SQL, choose a weak candidate, repeat work, or stop too early. Those behaviors form the experiment evidence. The model cannot mutate the retailer data or change its own operating limits.
+Within that boundary, the model can still write ineffective SQL, choose a weak candidate, repeat work, or stop too early. Those behaviors form the experiment evidence. The application protects the retailer data and keeps the operating limits under server control.
 
 ## What I sent to Arize
 
@@ -111,7 +111,7 @@ Costco returned a large bottled-water package. Walmart returned canned chicken b
 
 The same run matched celery to celery salt and carrots to a prepared pot roast containing carrots. The database and SQL gateway worked as designed. The search and evidence-selection policy accepted irrelevant evidence.
 
-## Trace finding 2: an execution limit became a false marketplace claim
+## Trace finding 2: an execution limit became an unsupported availability conclusion
 
 The agent completed both retailer searches for seven of 14 items. It then reached its model-round limit. The response still contained 14 rows and described the seven unsearched items as unavailable.
 
@@ -143,6 +143,6 @@ The baseline established a specific hypothesis for Part 2:
 
 > A coverage-first search policy should complete more retailer searches and reject category-incompatible matches without creating an unacceptable latency, token, or tool-use regression.
 
-The trace supported the hypothesis as a test. It did not support shipping the proposed change. [Part 2](PART_2_EVALUATE_IMPROVE_DECIDE.md) runs the controlled comparison and makes that decision.
+The trace gave me enough evidence to test the hypothesis, but not enough to promote the proposed change. [Part 2](PART_2_EVALUATE_IMPROVE_DECIDE.md) runs the controlled comparison and makes that decision.
 
 The complete authority and behavior contract is in [Agent definition](AGENT_DEFINITION.md).

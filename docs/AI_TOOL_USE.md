@@ -11,17 +11,17 @@ I owned the product decisions:
 - writing the reference behavior before the comparison;
 - pairing model judges with deterministic checks;
 - keeping Prompt B as the deployed demo baseline while C was tested;
-- rejecting Prompt C after the experiment.
+- choosing not to promote Prompt C after the experiment.
 
 AI output required verification. Three examples changed the work:
 
 1. Early plans included more infrastructure and data than the assignment needed. I reduced the scope to one user flow, two tools, one controlled dataset, and one prompt comparison.
-2. Prompt C produced invalid item IDs and then invalid retailer identity. I kept the runtime contract fixed and revised only the candidate prompt so the traces preserved those failures.
+2. Prompt C produced item IDs and retailer values that did not match the contract. I kept the runtime contract fixed and revised only the candidate prompt so the traces preserved that behavior.
 3. Earlier documentation described a different OCR boundary than the hosted demo. The hosted demo sends photos to the Cloudflare Worker for model-based OCR. I corrected the shared write-up to match the system reviewers can run.
 
 ## Product feedback from the assisted workflow
 
-The implementation work made several UI ambiguities concrete:
+The implementation work surfaced several product questions in the UI:
 
 - a trace can be accepted before every expected span is queryable;
 - evaluator mappings can appear plausible without proving that the selected field answers the evaluator's question;
